@@ -14,6 +14,7 @@ public class Job {
 	}
 	
 	public void initJob() {
+		
 		this.nbOperations = Character.getNumericValue(this.sentence.charAt(0));
 		for(int i=4;i<this.sentence.length();i+=12) {
 			
@@ -24,10 +25,20 @@ public class Job {
 				listOperations.add( new Operation(machinesNeeded,nameMachine,timeOperation) );
 			}
 			else {
-				
+				int[] nameMachine = new int[machinesNeeded];
+				int[] timeOperation = new int[machinesNeeded];
+
+				System.out.println("Machines needed : " + machinesNeeded);
+				for(int j=1;j<=machinesNeeded;j++) {
+					// Attention 
+					nameMachine[j-1] = Character.getNumericValue(this.sentence.charAt(i+((j*4))));
+					timeOperation[j-1] = Character.getNumericValue(this.sentence.charAt(i+(j*8)));
+				}
+				listOperations.add( new Operation(machinesNeeded,nameMachine,timeOperation));
 			}
 		}
 		System.out.println(this.listOperations.toString());
+		
 	}
 	
 	public String toString() { 
