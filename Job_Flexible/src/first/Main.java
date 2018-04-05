@@ -1,4 +1,6 @@
 package first;
+import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -13,6 +15,7 @@ public class Main {
 	private static Job[] tabJobs;
 	
  	public static void main(String[] args) {
+ 		
 		readFile("example1.txt");
 	}
 
@@ -45,6 +48,20 @@ public class Main {
                 if (sc != null)
                     sc.close();
             }
+		
+	}
+	
+	private static void Tutorial1() {
+		
+			Graph graph = new SingleGraph("Tutorial 1");
+			graph.addNode("A" );
+			graph.addNode("B" );
+			graph.addNode("C" );
+			graph.addEdge("AB", "A", "B");
+			graph.addEdge("BC", "B", "C");
+			graph.addEdge("CA", "C", "A");
+			graph.display();
+			
 		
 	}
 	
