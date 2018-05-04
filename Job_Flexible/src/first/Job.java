@@ -1,14 +1,17 @@
-package first;
+
 
 import java.util.ArrayList;
 
 public class Job {
-	
+	private int numJob;
+	private int compteurOp = 0;
 	private String sentence = null;
 	private int nbOperations = 0;
 	private ArrayList<Operation> listOperations = new ArrayList<Operation>();
+	private int compteur = 0;
 	
-	public Job(String sentence) {
+	public Job(String sentence, int numJob) {
+		this.numJob = numJob;
 		this.sentence = sentence;
 		for(int i=0;i<10;i++) {
 		}
@@ -23,7 +26,9 @@ public class Job {
 			if(machinesNeeded == 1) {
 				int nameMachine = Character.getNumericValue(this.sentence.charAt(i+4));
 				int timeOperation = Character.getNumericValue(this.sentence.charAt(i+8));
-				listOperations.add( new Operation(machinesNeeded,nameMachine,timeOperation) );
+				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
+				compteurOp++;
+				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation) );
 			}
 			else {
 				int[] nameMachine = new int[machinesNeeded];
@@ -35,7 +40,9 @@ public class Job {
 					timeOperation[j-1] = Character.getNumericValue(this.sentence.charAt(i+(j*8)));
 				}
 				i += ((machinesNeeded*4));
-				listOperations.add( new Operation(machinesNeeded,nameMachine,timeOperation));
+				String name = "o"+Integer.toString(compteurOp);
+				compteurOp++;
+				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation));
 			}
 		}
 		System.out.println(this.listOperations.toString());
@@ -48,6 +55,14 @@ public class Job {
 	    	ret += ope.toString();
 	    }
 	    return ret;
-	} 
+	}
+
+	public int getCompteur(){
+		return compteur;
+	}
+
+	public ArrayList<Operation> getListOperations(){
+		return listOperations;	
+	}
 	
 }
