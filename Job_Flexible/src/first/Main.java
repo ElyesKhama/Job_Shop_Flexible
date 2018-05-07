@@ -17,8 +17,9 @@ public class Main {
 		System.out.println("Chargement du fichier.................");
 		readFile("example1.txt");
 		System.out.println("Fichier chargé !");
+		createListMachines();		
 		giveSolution();
-		createListMachines();
+
 	}
 
 //TODO: Pour chaque machine, une liste d'opérations pouvant(devant) s'effectuer dessus
@@ -63,6 +64,7 @@ public class Main {
 					tabMachines.add(listOperation);
 		}
 		System.out.println("J'ai crée ma liste de "+machines+" machines ");
+		System.out.println(tabMachines.toString());
 	}
 
 	//TODO: Vérifier qu'on ne crée pas de circuit dans le graphe (avec les machines et contrainte de précédence)
@@ -77,7 +79,7 @@ public class Main {
 		int timeOperationCurrent;
 		for(i=0;i<jobs;i++){		//pour chaque job
 			compteurJob = tabJobs[i].getCompteur();						//recuperation du compteur
-			System.out.println("compteur job"+i+" : "+compteurJob);		
+			//System.out.println("compteur job"+i+" : "+compteurJob);		
 			listOperations = tabJobs[i].getListOperations();			//recuperation de la liste op
 			System.out.println("liste opération job"+i+" :"+tabJobs[i].getListOperations().toString());
 			operationCurrent = listOperations.get(compteurJob);			//recherche de la compteur-ième operation dans la liste du job
@@ -85,11 +87,17 @@ public class Main {
 			machineTimeOperationCurrent = operationCurrent.getMachineTime();	//recup de sa/ses machines pour l'operation
 			int a;			
 			for(a=0;a<machinesNeededOperationCurrent;a++){
-				//tabMachines.get(i).add(machineTimeOperationCurrent[a].getNomMachine());   //TODO: A continuer ici : add dans la liste des machines
+				System.out.println("la/les machines needed sont :"+ machineTimeOperationCurrent[a].toString());
+					int k;					
+					for(k=0;k<machines;k++){
+						if(k == machineTimeOperationCurrent[a].getNomMachine()){
+							tabMachines.get(k).add(operationCurrent);  //add dans la liste des machines
+							System.out.println(tabMachines.toString());
+						}
+					}																			//TODO: Recuperer les temps et les comparer pour effectuer la 1ere heuristique
 			}
-			System.out.println(tabJobs[i].toString());
-			
-		}	
+		}
+		System.out.println(tabMachines.toString());
 	}
 
 	
