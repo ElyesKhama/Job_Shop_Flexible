@@ -1,4 +1,4 @@
-//import package first;
+package first;
 
 
 public class Operation {
@@ -48,6 +48,10 @@ public class Operation {
 
 	public int getMachinesNeeded(){
 		return machinesNeeded;	
+	}
+	
+	public String getNameOperation() {
+		return this.nameOperation;
 	}
 
 	public int getNumJob(){

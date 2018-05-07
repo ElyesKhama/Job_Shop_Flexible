@@ -1,4 +1,4 @@
-//import package first;
+package first;
 
 
 public class Tuple { 

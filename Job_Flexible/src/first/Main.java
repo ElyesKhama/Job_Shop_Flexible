@@ -1,6 +1,7 @@
-//import package first;
-//import org.graphstream.graph.*;
-//import org.graphstream.graph.implementations.*;
+package first;
+
+import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -22,6 +23,7 @@ public class Main {
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
 		readFile("example1.txt");
+		tutorial1();
 		System.out.println("Fichier chargé !");
 		createListMachines();	
 		printTabJobs();
@@ -170,18 +172,25 @@ public class Main {
 	}
 
 	
-/*	private static void Tutorial1() {
-		
-			Graph graph = new SingleGraph("Tutorial 1");
-			graph.addNode("A" );
-			graph.addNode("B" );
-			graph.addNode("C" );
-			graph.addEdge("AB", "A", "B");
-			graph.addEdge("BC", "B", "C");
-			graph.addEdge("CA", "C", "A");
-			graph.display();
+	private static void tutorial1() {
+		ArrayList<Operation> listOperations;
+		Graph graph = new SingleGraph("Problème visualisé");
+		graph.setAttribute("ui.label", true);
+		for(int i=0;i<tabJobs.length;i++) {
+			listOperations = tabJobs[i].getListOperations();
+			Node n = graph.addNode(listOperations.get(0).getNameOperation());
+			n.setAttribute("ui.label",listOperations.get(0).getNameOperation());
+			for(int j=1;j<listOperations.size();j++) {
+				
+				n = graph.addNode(listOperations.get(j).getNameOperation());
+				n.setAttribute("ui.label",listOperations.get(j).getNameOperation());
+				graph.addEdge(Integer.toString(i)+Integer.toString(j),listOperations.get(j-1).getNameOperation() ,listOperations.get(j).getNameOperation());
+			}
 			
+		}
+
+		graph.display();
 		
-	}  */
+	}  
 	
 }

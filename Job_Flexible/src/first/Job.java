@@ -1,6 +1,6 @@
+package first;
 import java.util.ArrayList;
 
-//import package first;
 
 public class Job {
 	private int numJob;
@@ -28,18 +28,20 @@ public class Job {
 				int timeOperation = Character.getNumericValue(this.sentence.charAt(i+8));
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
-				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
+				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
 			}
 			else {
 				int[] nameMachine = new int[machinesNeeded];
 				int[] timeOperation = new int[machinesNeeded];
-
-				for(int j=1;j<=machinesNeeded;j++) {
-					// Attention 
-					nameMachine[j-1] = Character.getNumericValue(this.sentence.charAt(i+((j*4))));
-					timeOperation[j-1] = Character.getNumericValue(this.sentence.charAt(i+(j*8)));
+				int f = 0;
+				for(int j=0;j<machinesNeeded;j++) {
+					// Attention
+					f+=4;
+					nameMachine[j] = Character.getNumericValue(this.sentence.charAt(i+f));
+					f+=4;
+					timeOperation[j] = Character.getNumericValue(this.sentence.charAt(i+f));
 				}
-				i += ((machinesNeeded*4));
+				i += (machinesNeeded-1)*8;
 				String name = "o"+Integer.toString(compteurOp);
 				compteurOp++;
 				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
