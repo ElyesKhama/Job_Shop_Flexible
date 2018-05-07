@@ -1,9 +1,11 @@
+//import package first;
 //import org.graphstream.graph.*;
 //import org.graphstream.graph.implementations.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Main {
 
@@ -12,14 +14,26 @@ public class Main {
 	private static int avgMachine = 0;
 	private static Job[] tabJobs;
 	private static ArrayList<ArrayList<Operation>> tabMachines;
+	private static int nbJobEnded = 0;
+	private static ArrayList<String> solution = new ArrayList<String>();
+	private static ArrayList<Integer> operationSelection = new ArrayList<Integer>();
+	private static ArrayList<Integer> machineAssignment = new ArrayList<Integer>();
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
 		readFile("example1.txt");
 		System.out.println("Fichier chargé !");
-		createListMachines();		
-		giveSolution();
-
+		createListMachines();	
+		printTabJobs();
+		while(nbJobEnded < machines){  //Tant que tous les jobs ne sont pas terminés, on continue
+			giveSolution();
+			printTabJobs();
+		}
+		Iterator<String> it;
+		it = solution.iterator();
+				while(it.hasNext()){   
+					System.out.println(it.next());	
+				}
 	}
 
 //TODO: Pour chaque machine, une liste d'opérations pouvant(devant) s'effectuer dessus
@@ -67,6 +81,56 @@ public class Main {
 		System.out.println(tabMachines.toString());
 	}
 
+	public static void selectBestJob(){
+		int i,j;
+		Iterator<Operation> it,it2;	
+		int current;
+		int elemRemove,elemToRemove;
+		for(i = 0;i<machines;i++){   //pour chaque machine
+			if(!tabMachines.get(i).isEmpty()){
+				current = 99;
+				elemRemove = 0;
+				elemToRemove = 0;
+				it = tabMachines.get(i).iterator();
+				while(it.hasNext()){
+					int time = it.next().getMachineTime()[0].getTimeOperation();    //TODO: a modifier, ici ne marche que pour une seule machine par opération, juste a recuperer le nb de machines et boucle for 
+					if(time < current){
+						current = time;
+						elemToRemove = elemRemove;
+					}
+					elemRemove++;
+				}
+				int numJob = tabMachines.get(i).get(elemToRemove).getNumJob();
+				tabJobs[numJob].updateCompteur();			// Augmenter le compteur du job
+				int a;				
+				for(a=i+1;a<machines;a++){															//si yen a plusieurs jobs pour la meme machine on l'enleve dans celle des ordres
+					if (tabMachines.get(a).contains(tabMachines.get(i).get(elemToRemove))){
+						tabMachines.get(a).remove(tabMachines.get(i).get(elemToRemove));
+					}								
+				}   
+				System.out.println(tabMachines.get(i).get(elemToRemove));
+				tabMachines.get(i).remove(elemToRemove);   //Une opération a été enlevé ici, la rajouter dans la solution
+				int numMachine = i+1;
+				int numJobDisplay = numJob+1;  //pour l'affichage un ajoute 1 comme on part de 0 ici mais pas dans le fichier
+				solution.add("Opération n° "+tabJobs[numJob].getCompteur()+ " du job n° "+ numJobDisplay + " sur la machine "+numMachine);
+				System.out.println("Opération n° "+tabJobs[numJob].getCompteur()+ " du job n° "+ numJobDisplay + " sur la machine "+numMachine);
+				if(tabJobs[numJob].getListOperations().isEmpty()){
+					nbJobEnded++;
+					System.out.println("Job terminé ...........");
+				}
+				System.out.println(tabMachines.toString());
+				
+			}
+		}	
+	}
+	
+	public static void printTabJobs(){
+		int i;
+		for (i=0;i<jobs;i++){
+			System.out.println("JOBS COMPTEUR \n"+ tabJobs[i].getCompteur());
+		}
+	}
+
 	//TODO: Vérifier qu'on ne crée pas de circuit dans le graphe (avec les machines et contrainte de précédence)
 	public static void giveSolution(){
 		System.out.println("Solution en cours de traitement.......");
@@ -82,22 +146,27 @@ public class Main {
 			//System.out.println("compteur job"+i+" : "+compteurJob);		
 			listOperations = tabJobs[i].getListOperations();			//recuperation de la liste op
 			System.out.println("liste opération job"+i+" :"+tabJobs[i].getListOperations().toString());
-			operationCurrent = listOperations.get(compteurJob);			//recherche de la compteur-ième operation dans la liste du job
-			machinesNeededOperationCurrent = operationCurrent.getMachinesNeeded(); //recup du nombre de machines pour cette operation
-			machineTimeOperationCurrent = operationCurrent.getMachineTime();	//recup de sa/ses machines pour l'operation
-			int a;			
-			for(a=0;a<machinesNeededOperationCurrent;a++){
-				System.out.println("la/les machines needed sont :"+ machineTimeOperationCurrent[a].toString());
-					int k;					
-					for(k=0;k<machines;k++){
-						if(k == machineTimeOperationCurrent[a].getNomMachine()){
-							tabMachines.get(k).add(operationCurrent);  //add dans la liste des machines
-							System.out.println(tabMachines.toString());
-						}
-					}																			//TODO: Recuperer les temps et les comparer pour effectuer la 1ere heuristique
+			if(!listOperations.isEmpty()){
+				operationCurrent = listOperations.get(0);			//recherche de la compteur-ième operation dans la liste du job
+				machinesNeededOperationCurrent = operationCurrent.getMachinesNeeded(); //recup du nombre de machines pour cette operation
+				machineTimeOperationCurrent = operationCurrent.getMachineTime();	//recup de sa/ses machines pour l'operation
+				int a;			
+				for(a=0;a<machinesNeededOperationCurrent;a++){
+					System.out.println("la/les machines needed sont :"+ machineTimeOperationCurrent[a].toString());
+						int k;
+						for(k=0;k<machines+1;k++){
+							if(k == machineTimeOperationCurrent[a].getNomMachine()){
+								if(!tabMachines.get(k-1).contains(operationCurrent)){
+									tabMachines.get(k-1).add(operationCurrent);  //add dans la liste des machines
+								}
+							}
+						}																			//TODO: Recuperer les temps et les comparer pour effectuer la 1ere heuristique
+				}
 			}
 		}
 		System.out.println(tabMachines.toString());
+		selectBestJob();
+		System.out.println("Solution terminé .......");
 	}
 
 	

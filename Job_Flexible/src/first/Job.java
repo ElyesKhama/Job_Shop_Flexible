@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+//import package first;
+
 public class Job {
 	private int numJob;
 	private int compteurOp = 0;
@@ -26,7 +28,7 @@ public class Job {
 				int timeOperation = Character.getNumericValue(this.sentence.charAt(i+8));
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
-				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation) );
+				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
 			}
 			else {
 				int[] nameMachine = new int[machinesNeeded];
@@ -40,7 +42,7 @@ public class Job {
 				i += ((machinesNeeded*4));
 				String name = "o"+Integer.toString(compteurOp);
 				compteurOp++;
-				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation));
+				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
 			}
 		}
 		System.out.println(this.listOperations.toString());
@@ -61,6 +63,11 @@ public class Job {
 
 	public ArrayList<Operation> getListOperations(){
 		return listOperations;	
+	}
+
+	public void updateCompteur(){
+		compteur++;
+		listOperations.remove(0); //on enleve le 1er element
 	}
 	
 }
