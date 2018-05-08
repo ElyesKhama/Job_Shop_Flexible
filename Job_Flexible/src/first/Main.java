@@ -1,7 +1,7 @@
-package first;
+//package first;
 
-import org.graphstream.graph.*;
-import org.graphstream.graph.implementations.*;
+/*import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*; */
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -22,8 +22,8 @@ public class Main {
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
-		readFile("example1.txt");
-		tutorial1();
+		readFile("example2.txt");
+		//tutorial1();
 		System.out.println("Fichier chargé !");
 		createListMachines();	
 		printTabJobs();
@@ -94,16 +94,23 @@ public class Main {
 				elemRemove = 0;
 				elemToRemove = 0;
 				it = tabMachines.get(i).iterator();
+				int time = 0;
 				while(it.hasNext()){
-					int time = it.next().getMachineTime()[0].getTimeOperation();    //TODO: a modifier, ici ne marche que pour une seule machine par opération, juste a recuperer le nb de machines et boucle for 
-					if(time < current){
+					Operation itnext = it.next();
+					int k;		
+					for(k = 0;k<itnext.getMachinesNeeded();k++){   //boucle qui sert a verifier qu'on va bien recuperer le bon temps d'exec de cette machine et pas d'une autre (pour la même opération)
+						if(i == itnext.getMachineTime()[k].getNomMachine()-1 ){
+										time = itnext.getMachineTime()[k].getTimeOperation();
+						}
+ 					}
+					if(time < current){				//pour prendre le plus petit
 						current = time;
 						elemToRemove = elemRemove;
 					}
 					elemRemove++;
 				}
 				int numJob = tabMachines.get(i).get(elemToRemove).getNumJob();
-				tabJobs[numJob].updateCompteur();			// Augmenter le compteur du job
+				tabJobs[numJob].updateCompteur();			// Augmenter le compteur du job et mettre a jour la liste des opérations restantes
 				int a;				
 				for(a=i+1;a<machines;a++){															//si yen a plusieurs jobs pour la meme machine on l'enleve dans celle des ordres
 					if (tabMachines.get(a).contains(tabMachines.get(i).get(elemToRemove))){
@@ -133,7 +140,7 @@ public class Main {
 		}
 	}
 
-	//TODO: Vérifier qu'on ne crée pas de circuit dans le graphe (avec les machines et contrainte de précédence)
+	//TODO: Vérifier qu'on ne crée pas de circuit dans le graphe (avec les machines et contrainte de précédence)  ???
 	public static void giveSolution(){
 		System.out.println("Solution en cours de traitement.......");
 		int i;
@@ -172,7 +179,7 @@ public class Main {
 	}
 
 	
-	private static void tutorial1() {
+/*	private static void tutorial1() {
 		ArrayList<Operation> listOperations;
 		Graph graph = new SingleGraph("Problème visualisé");
 		graph.setAttribute("ui.label", true);
@@ -192,5 +199,5 @@ public class Main {
 		graph.display();
 		
 	}  
-	
+	*/
 }

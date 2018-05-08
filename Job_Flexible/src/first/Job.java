@@ -1,4 +1,4 @@
-package first;
+//package first;
 import java.util.ArrayList;
 
 
@@ -42,7 +42,7 @@ public class Job {
 					timeOperation[j] = Character.getNumericValue(this.sentence.charAt(i+f));
 				}
 				i += (machinesNeeded-1)*8;
-				String name = "o"+Integer.toString(compteurOp);
+				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
 				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
 			}
