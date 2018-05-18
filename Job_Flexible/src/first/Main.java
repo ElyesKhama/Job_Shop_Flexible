@@ -16,10 +16,14 @@ public class Main {
 	private static Job[] tabJobs;
 	private static ArrayList<ArrayList<Operation>> tabMachines;
 	private static int nbJobEnded = 0;
-	private static ArrayList<String> solution = new ArrayList<String>();
-	private static ArrayList<Integer> operationSelection = new ArrayList<Integer>();
-	private static ArrayList<Integer> machineAssignment = new ArrayList<Integer>();
-	
+	private static ArrayList<String> operationSelection = new ArrayList<String>();
+	private static ArrayList<String> machineAssignment = new ArrayList<String>();
+	private static ArrayList<String> numOperation = new ArrayList<String>();
+	static int first = 0;
+	private static ArrayList<String> operationSelectionRecherche = new ArrayList<String>();
+	private static ArrayList<String> machineAssignmentRecherche = new ArrayList<String>();
+	private static ArrayList<String> numOperationRecherche = new ArrayList<String>();
+
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
 		readFile("example2.txt");
@@ -27,15 +31,15 @@ public class Main {
 		System.out.println("Fichier chargé !");
 		createListMachines();	
 		printTabJobs();
-		while(nbJobEnded < machines){  //Tant que tous les jobs ne sont pas terminés, on continue
+		while(nbJobEnded < jobs){  //Tant que tous les jobs ne sont pas terminés, on continue
 			giveSolution();
 			printTabJobs();
 		}
-		Iterator<String> it;
-		it = solution.iterator();
-				while(it.hasNext()){   
-					System.out.println(it.next());	
-				}
+		System.out.println("VECTEUR MA \n" + machineAssignment.toString());
+		System.out.println("VECTEUR OS \n" + operationSelection.toString());
+		System.out.println("VECTEUR NUM OPERATION \n" + numOperation.toString());
+		int time = calculObjectif();
+		System.out.println("Le temps final est de : "+time);
 	}
 
 //TODO: Pour chaque machine, une liste d'opérations pouvant(devant) s'effectuer dessus
@@ -97,7 +101,7 @@ public class Main {
 				int time = 0;
 				while(it.hasNext()){
 					Operation itnext = it.next();
-					int k;		
+					int k;		//TODO: A modifier avec la nvl fcntion getTime() (dans job)
 					for(k = 0;k<itnext.getMachinesNeeded();k++){   //boucle qui sert a verifier qu'on va bien recuperer le bon temps d'exec de cette machine et pas d'une autre (pour la même opération)
 						if(i == itnext.getMachineTime()[k].getNomMachine()-1 ){
 										time = itnext.getMachineTime()[k].getTimeOperation();
@@ -111,28 +115,70 @@ public class Main {
 				}
 				int numJob = tabMachines.get(i).get(elemToRemove).getNumJob();
 				tabJobs[numJob].updateCompteur();			// Augmenter le compteur du job et mettre a jour la liste des opérations restantes
-				int a;				
-				for(a=i+1;a<machines;a++){															//si yen a plusieurs jobs pour la meme machine on l'enleve dans celle des ordres
-					if (tabMachines.get(a).contains(tabMachines.get(i).get(elemToRemove))){
-						tabMachines.get(a).remove(tabMachines.get(i).get(elemToRemove));
-					}								
-				}   
-				System.out.println(tabMachines.get(i).get(elemToRemove));
-				tabMachines.get(i).remove(elemToRemove);   //Une opération a été enlevé ici, la rajouter dans la solution
+				supprOperation(tabMachines.get(i).get(elemToRemove));
+								
 				int numMachine = i+1;
 				int numJobDisplay = numJob+1;  //pour l'affichage un ajoute 1 comme on part de 0 ici mais pas dans le fichier
-				solution.add("Opération n° "+tabJobs[numJob].getCompteur()+ " du job n° "+ numJobDisplay + " sur la machine "+numMachine);
+				operationSelection.add(String.valueOf(numJobDisplay));
+				machineAssignment.add(String.valueOf(numMachine));
+				numOperation.add(String.valueOf(tabJobs[numJob].getCompteur()));
 				System.out.println("Opération n° "+tabJobs[numJob].getCompteur()+ " du job n° "+ numJobDisplay + " sur la machine "+numMachine);
 				if(tabJobs[numJob].getListOperations().isEmpty()){
 					nbJobEnded++;
 					System.out.println("Job terminé ...........");
 				}
 				System.out.println(tabMachines.toString());
-				
 			}
 		}	
 	}
 	
+	public static void supprOperation(Operation operationSuppr){
+		int a;
+		for(a=0;a<machines;a++){														//si yen a plusieurs jobs pour la meme machine on l'enleve dans celle des ordres
+			if(!tabMachines.get(a).isEmpty()){
+				if (tabMachines.get(a).contains(operationSuppr)){
+					tabMachines.get(a).remove(operationSuppr);
+				}
+			}								
+		}   
+	}
+	
+	public static int calculObjectif(){
+		Iterator<String> it1,it2,it3;
+		it1 = operationSelection.iterator();
+		it2 = machineAssignment.iterator();				
+		it3 = numOperation.iterator();
+		
+		int numMachine; 
+		int numJob;
+		int numOpération; //pour pouvoir .toString()
+		String checkEtoile;
+	
+		int timeParallele = 0;
+		int timeGlobale = 0;
+		while(it1.hasNext()){
+			checkEtoile = it1.next();
+			if(checkEtoile.compareTo("*") != 0){
+				numJob = Integer.parseInt(checkEtoile) -1 ;
+				numMachine = Integer.parseInt(it2.next());
+				numOpération = Integer.parseInt(it3.next())-1;
+				int timeExec = tabJobs[numJob].getTime(numOpération,numMachine); 
+	//System.out.println("timeExec :" +timeExec);
+				if( timeExec > timeParallele){
+					timeParallele = timeExec;
+				}
+			}
+			else{
+				timeGlobale += timeParallele;
+				it2.next();
+				it3.next();
+				timeParallele = 0;
+			}
+		}
+		return timeGlobale;
+		
+	}	
+
 	public static void printTabJobs(){
 		int i;
 		for (i=0;i<jobs;i++){
@@ -169,15 +215,44 @@ public class Main {
 									tabMachines.get(k-1).add(operationCurrent);  //add dans la liste des machines
 								}
 							}
-						}																			//TODO: Recuperer les temps et les comparer pour effectuer la 1ere heuristique
+						}																		
 				}
 			}
+		}
+		if(first>=1){
+			operationSelection.add("*");
+			machineAssignment.add("*");
+			numOperation.add("*");
 		}
 		System.out.println(tabMachines.toString());
 		selectBestJob();
 		System.out.println("Solution terminé .......");
+		first++;
 	}
 
+	public static void rechercheLocale(){
+		Iterator<String> it1,it2,it3;
+		it1 = operationSelectionRecherche.iterator();
+		it2 = machineAssignmentRecherche.iterator();				
+		it3 = numOperationRecherche.iterator();
+		int numMachine; 
+		int numJob;
+		int numOpération; //pour pouvoir .toString()
+		String checkEtoile;
+	
+		while(it1.hasNext()){
+			checkEtoile = it1.next();
+			if(checkEtoile.compareTo("*") != 0){
+				
+				}
+			else{
+				it2.next();
+				it3.next();
+			}
+		}
+	}
+
+//TODO: Tant que notre voisinage est meilleur --> on continue d'en rechercher sinon on arrete
 	
 /*	private static void tutorial1() {
 		ArrayList<Operation> listOperations;

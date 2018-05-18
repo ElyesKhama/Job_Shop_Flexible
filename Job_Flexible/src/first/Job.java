@@ -1,13 +1,14 @@
 //package first;
 import java.util.ArrayList;
-
+import java.util.Iterator;
 
 public class Job {
 	private int numJob;
 	private int compteurOp = 0;
 	private String sentence = null;
 	private int nbOperations = 0;
-	private ArrayList<Operation> listOperations = new ArrayList<Operation>();
+	private ArrayList<Operation> listOperations = new ArrayList<Operation>();   //restante
+	private ArrayList<Operation> listOperationsGlobale = new ArrayList<Operation>();
 	private int compteur = 0;
 	
 	public Job(String sentence, int numJob) {
@@ -29,6 +30,7 @@ public class Job {
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
 				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
+				listOperationsGlobale.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
 			}
 			else {
 				int[] nameMachine = new int[machinesNeeded];
@@ -45,6 +47,7 @@ public class Job {
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
 				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
+				listOperationsGlobale.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
 			}
 		}
 		System.out.println(this.listOperations.toString());
@@ -70,6 +73,21 @@ public class Job {
 	public void updateCompteur(){
 		compteur++;
 		listOperations.remove(0); //on enleve le 1er element
+	}
+
+	public int getTime(int numOp, int numMachine){
+		int time = 0;
+		int k;
+		int machinesNeeded;
+		Operation operation;
+		operation = listOperationsGlobale.get(numOp);
+		machinesNeeded = operation.getMachinesNeeded();
+		for(k = 0;k<machinesNeeded;k++){
+			if(numMachine == operation.getMachineTime()[k].getNomMachine()){
+							time = operation.getMachineTime()[k].getTimeOperation();
+			}
+		}
+		return time;
 	}
 	
 }
