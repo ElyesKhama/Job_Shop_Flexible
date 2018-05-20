@@ -1,4 +1,4 @@
-//package first;
+package first;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -19,14 +19,22 @@ public class Job {
 		initJob();
 	}
 	
+	public int testDizaine(int dizaine, int unite) {
+		int ret = dizaine;
+		if(unite != -1)
+			ret = dizaine*10 + unite;
+		return ret;
+	}
+	
 	public void initJob() {
-		
-		this.nbOperations = Character.getNumericValue(this.sentence.charAt(0));
+
+		this.nbOperations = testDizaine(Character.getNumericValue(this.sentence.charAt(0)),Character.getNumericValue(this.sentence.charAt(1)));
+			
 		for(int i=4;i<this.sentence.length();i+=12) {
 			int machinesNeeded = Character.getNumericValue(this.sentence.charAt(i));
 			if(machinesNeeded == 1) {
-				int nameMachine = Character.getNumericValue(this.sentence.charAt(i+4));
-				int timeOperation = Character.getNumericValue(this.sentence.charAt(i+8));
+				int nameMachine = testDizaine(Character.getNumericValue(this.sentence.charAt(i+4)),Character.getNumericValue(this.sentence.charAt(i+5)));
+				int timeOperation = testDizaine(Character.getNumericValue(this.sentence.charAt(i+8)),Character.getNumericValue(this.sentence.charAt(i+9)));
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
 				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
@@ -39,9 +47,9 @@ public class Job {
 				for(int j=0;j<machinesNeeded;j++) {
 					// Attention
 					f+=4;
-					nameMachine[j] = Character.getNumericValue(this.sentence.charAt(i+f));
+					nameMachine[j] = testDizaine(Character.getNumericValue(this.sentence.charAt(i+f)),Character.getNumericValue(this.sentence.charAt(i+f+1)));
 					f+=4;
-					timeOperation[j] = Character.getNumericValue(this.sentence.charAt(i+f));
+					timeOperation[j] = testDizaine(Character.getNumericValue(this.sentence.charAt(i+f)),Character.getNumericValue(this.sentence.charAt(i+f+1)));
 				}
 				i += (machinesNeeded-1)*8;
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);

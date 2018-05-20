@@ -1,7 +1,7 @@
-//package first;
+package first;
 
-/*import org.graphstream.graph.*;
-import org.graphstream.graph.implementations.*; */
+import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -27,7 +27,7 @@ public class Main {
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
 		readFile("example2.txt");
-		//tutorial1();
+		tutorial1();
 		System.out.println("Fichier chargé !");
 		createListMachines();	
 		printTabJobs();
@@ -254,7 +254,7 @@ public class Main {
 
 //TODO: Tant que notre voisinage est meilleur --> on continue d'en rechercher sinon on arrete
 	
-/*	private static void tutorial1() {
+	private static void tutorial1() {
 		ArrayList<Operation> listOperations;
 		Graph graph = new SingleGraph("Problème visualisé");
 		graph.setAttribute("ui.label", true);
@@ -274,5 +274,5 @@ public class Main {
 		graph.display();
 		
 	}  
-	*/
+	
 }
