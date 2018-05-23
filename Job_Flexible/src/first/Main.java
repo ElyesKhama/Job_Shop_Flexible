@@ -26,9 +26,9 @@ public class Main {
 
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
-		readFile("example2.txt");
+		readFile("test.txt");
 		tutorial1();
-		System.out.println("Fichier chargé !");
+		/*System.out.println("Fichier chargé !");
 		createListMachines();	
 		printTabJobs();
 		while(nbJobEnded < jobs){  //Tant que tous les jobs ne sont pas terminés, on continue
@@ -39,7 +39,7 @@ public class Main {
 		System.out.println("VECTEUR OS \n" + operationSelection.toString());
 		System.out.println("VECTEUR NUM OPERATION \n" + numOperation.toString());
 		int time = calculObjectif();
-		System.out.println("Le temps final est de : "+time);
+		System.out.println("Le temps final est de : "+time);*/
 	}
 
 //TODO: Pour chaque machine, une liste d'opérations pouvant(devant) s'effectuer dessus

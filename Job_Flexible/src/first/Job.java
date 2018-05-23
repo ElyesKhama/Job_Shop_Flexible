@@ -29,12 +29,15 @@ public class Job {
 	public void initJob() {
 
 		this.nbOperations = testDizaine(Character.getNumericValue(this.sentence.charAt(0)),Character.getNumericValue(this.sentence.charAt(1)));
-			
+
 		for(int i=4;i<this.sentence.length();i+=12) {
 			int machinesNeeded = Character.getNumericValue(this.sentence.charAt(i));
+			System.out.println("MachinesNeeded : "+ machinesNeeded);
 			if(machinesNeeded == 1) {
 				int nameMachine = testDizaine(Character.getNumericValue(this.sentence.charAt(i+4)),Character.getNumericValue(this.sentence.charAt(i+5)));
+				System.out.println("NameMachine : "+ nameMachine);
 				int timeOperation = testDizaine(Character.getNumericValue(this.sentence.charAt(i+8)),Character.getNumericValue(this.sentence.charAt(i+9)));
+				System.out.println("timeOperation : "+ timeOperation);
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
 				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
@@ -48,8 +51,10 @@ public class Job {
 					// Attention
 					f+=4;
 					nameMachine[j] = testDizaine(Character.getNumericValue(this.sentence.charAt(i+f)),Character.getNumericValue(this.sentence.charAt(i+f+1)));
+					System.out.print("NameMachine : "+ nameMachine[j]);
 					f+=4;
 					timeOperation[j] = testDizaine(Character.getNumericValue(this.sentence.charAt(i+f)),Character.getNumericValue(this.sentence.charAt(i+f+1)));
+					System.out.println(", timeOperation : "+ timeOperation[j]);
 				}
 				i += (machinesNeeded-1)*8;
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
