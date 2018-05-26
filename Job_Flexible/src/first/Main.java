@@ -28,10 +28,10 @@ public class Main {
 		System.out.println("Chargement du fichier.................");
 		readFile("test.txt");
 		tutorial1();
-		/*System.out.println("Fichier chargé !");
+		System.out.println("Fichier chargé !");
 		createListMachines();	
 		printTabJobs();
-		while(nbJobEnded < jobs){  //Tant que tous les jobs ne sont pas terminés, on continue
+		/*while(nbJobEnded < jobs){  //Tant que tous les jobs ne sont pas terminés, on continue
 			giveSolution();
 			printTabJobs();
 		}
@@ -41,6 +41,19 @@ public class Main {
 		int time = calculObjectif();
 		System.out.println("Le temps final est de : "+time);*/
 	}
+ 	
+ 	public void testAdam() {
+ 		ArrayList<Operation> listOpToDo = new ArrayList<Operation>();
+ 		Operation operation = null;
+ 		for(int i=0;i<tabJobs.length;i++) {
+ 			operation = tabJobs[i].popOperation();
+ 			if(operation != null)
+ 				listOpToDo.add(operation);
+ 			
+ 		}
+ 		
+ 	}
+ 	
 
 //TODO: Pour chaque machine, une liste d'opérations pouvant(devant) s'effectuer dessus
 
@@ -123,7 +136,7 @@ public class Main {
 				machineAssignment.add(String.valueOf(numMachine));
 				numOperation.add(String.valueOf(tabJobs[numJob].getCompteur()));
 				System.out.println("Opération n° "+tabJobs[numJob].getCompteur()+ " du job n° "+ numJobDisplay + " sur la machine "+numMachine);
-				if(tabJobs[numJob].getListOperations().isEmpty()){
+				if(tabJobs[numJob].getOperationsRestantes().isEmpty()){
 					nbJobEnded++;
 					System.out.println("Job terminé ...........");
 				}
@@ -199,8 +212,8 @@ public class Main {
 		for(i=0;i<jobs;i++){		//pour chaque job
 			compteurJob = tabJobs[i].getCompteur();						//recuperation du compteur
 			//System.out.println("compteur job"+i+" : "+compteurJob);		
-			listOperations = tabJobs[i].getListOperations();			//recuperation de la liste op
-			System.out.println("liste opération job"+i+" :"+tabJobs[i].getListOperations().toString());
+			listOperations = tabJobs[i].getOperationsRestantes();			//recuperation de la liste op
+			System.out.println("liste opération job"+i+" :"+tabJobs[i].getOperationsRestantes().toString());
 			if(!listOperations.isEmpty()){
 				operationCurrent = listOperations.get(0);			//recherche de la compteur-ième operation dans la liste du job
 				machinesNeededOperationCurrent = operationCurrent.getMachinesNeeded(); //recup du nombre de machines pour cette operation
@@ -259,7 +272,7 @@ public class Main {
 		Graph graph = new SingleGraph("Problème visualisé");
 		graph.setAttribute("ui.label", true);
 		for(int i=0;i<tabJobs.length;i++) {
-			listOperations = tabJobs[i].getListOperations();
+			listOperations = tabJobs[i].getOperationsRestantes();
 			Node n = graph.addNode(listOperations.get(0).getNameOperation());
 			n.setAttribute("ui.label",listOperations.get(0).getNameOperation());
 			for(int j=1;j<listOperations.size();j++) {

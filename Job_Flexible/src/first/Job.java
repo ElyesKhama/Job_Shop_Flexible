@@ -7,8 +7,8 @@ public class Job {
 	private int compteurOp = 0;
 	private String sentence = null;
 	private int nbOperations = 0;
-	private ArrayList<Operation> listOperations = new ArrayList<Operation>();   //restante
-	private ArrayList<Operation> listOperationsGlobale = new ArrayList<Operation>();
+	private ArrayList<Operation> operationsRestantes = new ArrayList<Operation>();   
+	private ArrayList<Operation> operationsTotales = new ArrayList<Operation>();
 	private int compteur = 0;
 	
 	public Job(String sentence, int numJob) {
@@ -32,16 +32,16 @@ public class Job {
 
 		for(int i=4;i<this.sentence.length();i+=12) {
 			int machinesNeeded = Character.getNumericValue(this.sentence.charAt(i));
-			System.out.println("MachinesNeeded : "+ machinesNeeded);
+			//System.out.println("MachinesNeeded : "+ machinesNeeded);
 			if(machinesNeeded == 1) {
 				int nameMachine = testDizaine(Character.getNumericValue(this.sentence.charAt(i+4)),Character.getNumericValue(this.sentence.charAt(i+5)));
-				System.out.println("NameMachine : "+ nameMachine);
+				//System.out.println("NameMachine : "+ nameMachine);
 				int timeOperation = testDizaine(Character.getNumericValue(this.sentence.charAt(i+8)),Character.getNumericValue(this.sentence.charAt(i+9)));
-				System.out.println("timeOperation : "+ timeOperation);
+				//System.out.println("timeOperation : "+ timeOperation);
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
-				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
-				listOperationsGlobale.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
+				operationsRestantes.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
+				operationsTotales.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
 			}
 			else {
 				int[] nameMachine = new int[machinesNeeded];
@@ -51,25 +51,25 @@ public class Job {
 					// Attention
 					f+=4;
 					nameMachine[j] = testDizaine(Character.getNumericValue(this.sentence.charAt(i+f)),Character.getNumericValue(this.sentence.charAt(i+f+1)));
-					System.out.print("NameMachine : "+ nameMachine[j]);
+					//System.out.print("NameMachine : "+ nameMachine[j]);
 					f+=4;
 					timeOperation[j] = testDizaine(Character.getNumericValue(this.sentence.charAt(i+f)),Character.getNumericValue(this.sentence.charAt(i+f+1)));
-					System.out.println(", timeOperation : "+ timeOperation[j]);
+					//System.out.println(", timeOperation : "+ timeOperation[j]);
 				}
 				i += (machinesNeeded-1)*8;
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
-				listOperations.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
-				listOperationsGlobale.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
+				operationsRestantes.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
+				operationsTotales.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
 			}
 		}
-		System.out.println(this.listOperations.toString());
+		System.out.println(this.operationsRestantes.toString());
 		
 	}
 	
 	public String toString() { 
 		String ret = "";
-	    for (Operation ope : listOperations) {
+	    for (Operation ope : operationsRestantes) {
 	    	ret += ope.toString();
 	    }
 	    return ret;
@@ -79,13 +79,22 @@ public class Job {
 		return compteur;
 	}
 
-	public ArrayList<Operation> getListOperations(){
-		return listOperations;	
+	public ArrayList<Operation> getOperationsRestantes(){
+		return operationsRestantes;	
 	}
 
+	public Operation popOperation() {
+		Operation operation;
+		if(!operationsRestantes.isEmpty())
+			operation = operationsRestantes.remove(0);
+		else
+			operation = null;
+		return operation;
+	}
+	
 	public void updateCompteur(){
 		compteur++;
-		listOperations.remove(0); //on enleve le 1er element
+		operationsRestantes.remove(0); //on enleve le 1er element
 	}
 
 	public int getTime(int numOp, int numMachine){
@@ -93,7 +102,7 @@ public class Job {
 		int k;
 		int machinesNeeded;
 		Operation operation;
-		operation = listOperationsGlobale.get(numOp);
+		operation = operationsTotales.get(numOp);
 		machinesNeeded = operation.getMachinesNeeded();
 		for(k = 0;k<machinesNeeded;k++){
 			if(numMachine == operation.getMachineTime()[k].getNomMachine()){
