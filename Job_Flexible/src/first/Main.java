@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Main {
-
+	
 	private static int jobs = 0;   //nb de jobs
 	private static int machines = 0;  //nb de machines
 	private static int avgMachine = 0;
@@ -24,13 +24,24 @@ public class Main {
 	private static ArrayList<String> machineAssignmentRecherche = new ArrayList<String>();
 	private static ArrayList<String> numOperationRecherche = new ArrayList<String>();
 
+	//Adam
+	private static ArrayList<Operation> listOpToDo = new ArrayList<Operation>();
+	private static int tempsTotale = 0;
+	private static ArrayList<String> oS = new ArrayList<String>();
+	private static ArrayList<String> mA = new ArrayList<String>();
+	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
 		readFile("test.txt");
-		tutorial1();
 		System.out.println("Fichier chargé !");
-		createListMachines();	
-		printTabJobs();
+		//createListMachines();
+		
+		while(nbJobEnded < jobs)
+			testAdam();
+		System.out.println(oS.toString());
+		System.out.println(mA.toString());
+		//printTabJobs();
+		//tutorial1();
 		/*while(nbJobEnded < jobs){  //Tant que tous les jobs ne sont pas terminés, on continue
 			giveSolution();
 			printTabJobs();
@@ -42,18 +53,88 @@ public class Main {
 		System.out.println("Le temps final est de : "+time);*/
 	}
  	
- 	public void testAdam() {
- 		ArrayList<Operation> listOpToDo = new ArrayList<Operation>();
+ 	private static void selectOpToDo() {
  		Operation operation = null;
+ 		
  		for(int i=0;i<tabJobs.length;i++) {
- 			operation = tabJobs[i].popOperation();
- 			if(operation != null)
- 				listOpToDo.add(operation);
+ 			operation = tabJobs[i].getOperation();
+ 			if(operation != null) {
+	 			if(!containsAJobOp(i)) {
+	 				listOpToDo.add(operation);
+	 				tabJobs[i].popOperation();
+	 			}
+ 			}
+ 			else nbJobEnded++;
+ 		}
+ 		listOpToDo.sort(new OperationComparator());
+ 	}
+ 	
+ 	private static boolean containsAJobOp(int numJob) {
+ 		boolean contain = false;
+ 		for(int j=0;j<listOpToDo.size();j++) {
+ 			if(listOpToDo.get(j).getNumJob() == numJob)
+ 				contain = true;
+ 		}
+ 		return contain;
+ 	}
+ 	
+ 	private static void refreshMA(Operation op, int machine) {
+ 		String name = op.getNameOperation();
+ 		String numOp = name.substring(1, 2);
+ 		String numJob = String.valueOf(Integer.parseInt(name.substring(3, 4))+1);
+ 		int i = 0, position;
+ 		boolean stop = false;
+ 		
+ 		while(i<mA.size() && !stop) {
+ 			
+ 			if (oS.get(i).equals(numJob)) {
+ 				position = Integer.parseInt(numOp)+i;
+ 				mA.remove(position);
+ 				System.out.println(String.valueOf(machine));
+ 				mA.add(position,String.valueOf(machine));
+ 				stop = true;
+ 			}
+ 			i++;
  			
  		}
  		
  	}
  	
+ 	private static void doOp() {
+ 		ArrayList<Integer> listMachinesUsed = new ArrayList<Integer>();
+ 		Tuple machineUsed;
+ 		int tempsParallele = 0, tempsExec = 0;
+ 		
+ 		for(int j=0;j<listOpToDo.size();j++) {
+ 			machineUsed = listOpToDo.get(j).getMachineTime()[0];
+ 			
+ 			if(!listMachinesUsed.contains(machineUsed.nomMachine)) {
+ 				
+ 				listMachinesUsed.add(machineUsed.nomMachine);
+ 				tempsExec = machineUsed.timeOperation;
+
+ 				if(tempsExec > tempsParallele)
+ 					tempsParallele = tempsExec;
+ 				System.out.println("ICI / ");
+ 				System.out.println(listOpToDo.toString());
+ 				refreshMA(listOpToDo.remove(j), machineUsed.nomMachine);
+
+ 		 		System.out.println(mA.toString());
+ 				j--;
+ 				
+ 			}
+ 		}
+ 		tempsTotale += tempsParallele;
+ 	}
+ 	
+ 	public static void testAdam() {
+ 		
+ 		selectOpToDo();
+ 		//System.out.println("Opération à faire : " + listOpToDo.toString() );
+ 		doOp();
+ 		//System.out.println("Temps après opérations : " + tempsTotale);
+ 		//System.out.println("Opérations restantes : " + listOpToDo.toString());
+ 	}
 
 //TODO: Pour chaque machine, une liste d'opérations pouvant(devant) s'effectuer dessus
 
@@ -74,9 +155,14 @@ public class Main {
                 }
                     
                 for(int i = 0;i<jobs;i++) {
+                	
                     if(sc.hasNextLine()) {
                     	sentence = sc.nextLine();
                     	tabJobs[i] = new Job(sentence,i);
+                    	for(int j=0;j<tabJobs[i].getNbOperations();j++) {
+                    		oS.add(Integer.toString(i+1));
+                    		mA.add("?");
+                    	}
                     }
                 }
             } catch (FileNotFoundException e) {
@@ -272,7 +358,7 @@ public class Main {
 		Graph graph = new SingleGraph("Problème visualisé");
 		graph.setAttribute("ui.label", true);
 		for(int i=0;i<tabJobs.length;i++) {
-			listOperations = tabJobs[i].getOperationsRestantes();
+			listOperations = tabJobs[i].getOperationsTotales();
 			Node n = graph.addNode(listOperations.get(0).getNameOperation());
 			n.setAttribute("ui.label",listOperations.get(0).getNameOperation());
 			for(int j=1;j<listOperations.size();j++) {

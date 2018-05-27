@@ -75,21 +75,33 @@ public class Job {
 	    return ret;
 	}
 
+	public int getNbOperations() {
+		return this.nbOperations;
+	}
+	
 	public int getCompteur(){
 		return compteur;
 	}
 
 	public ArrayList<Operation> getOperationsRestantes(){
-		return operationsRestantes;	
+		return this.operationsRestantes;	
+	}
+	
+	public ArrayList<Operation> getOperationsTotales(){
+		return this.operationsTotales;
 	}
 
-	public Operation popOperation() {
+	public Operation getOperation() {
 		Operation operation;
 		if(!operationsRestantes.isEmpty())
-			operation = operationsRestantes.remove(0);
+			operation = operationsRestantes.get(0);
 		else
 			operation = null;
 		return operation;
+	}
+	
+	public void popOperation() {
+		operationsRestantes.remove(0);
 	}
 	
 	public void updateCompteur(){

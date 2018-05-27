@@ -1,5 +1,6 @@
 package first;
 
+import java.util.Arrays;
 
 public class Operation {
 	private String nameOperation;
@@ -16,6 +17,8 @@ public class Operation {
 		this.machinesNeeded = machinesNeeded;
 		this.machineTime = new Tuple[machinesNeeded];
 		this.machineTime[0] = new Tuple(nameMachine,timeOperation);	
+		Arrays.sort(this.machineTime, new TupleTimeComparator());
+		//machineTimeToString();
 		this.numJob = numJob;
 	}
 	
@@ -26,7 +29,17 @@ public class Operation {
 		for(int i=0;i<machinesNeeded;i++) {
 			this.machineTime[i] = new Tuple(nameMachine[i],timeOperation[i]);
 		}
+		Arrays.sort(this.machineTime, new TupleTimeComparator());
+		//machineTimeToString();
 		this.numJob = numJob;
+	}
+	
+	public void machineTimeToString() {
+		String toDisplay = this.nameOperation + "ok: ";
+		for(int i=0;i<this.machineTime.length;i++) {
+			toDisplay += this.machineTime[i].toString() ;
+		}
+		System.out.println(toDisplay);
 	}
 	
 	/*public String toString() {
