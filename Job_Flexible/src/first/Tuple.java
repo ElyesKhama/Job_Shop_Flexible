@@ -26,5 +26,10 @@ public class Tuple {
 		return timeOperation;
 	}
 	
-	
-} 
+	public boolean equals(Tuple obj){
+		if ((obj.nomMachine == this.nomMachine) && (obj.timeOperation == this.timeOperation))
+			return true;
+		else
+			return false;
+	}
+}
