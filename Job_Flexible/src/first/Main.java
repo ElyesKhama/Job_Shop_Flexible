@@ -20,6 +20,8 @@ public class Main {
 	private static int tempsTotale = 0;
 	private static ArrayList<String> oS = new ArrayList<String>();
 	private static ArrayList<String> mA = new ArrayList<String>();
+	private static ArrayList<ArrayList<String>> oSPop = new ArrayList<ArrayList<String>>();   //vecteur de population : OS
+	private static ArrayList<ArrayList<String>> mAPop = new ArrayList<ArrayList<String>>();	  //vecteur de population : MA
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
@@ -28,11 +30,25 @@ public class Main {
 		
 		while(nbJobEnded < jobs)
 			testAdam();
+		createPopulation();
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
 		//printTabJobs();
 		//tutorial1();
 	}
+ 	
+ 	public static void createPopulation() {
+ 		int nbPopulation = 100;
+ 		int nbTaches = mA.size();
+ 		int indiceRandom = (int) (Math.random() * nbTaches);
+ 		
+ 		ArrayList<String> maTemp = new ArrayList<String>();
+ 		maTemp = (ArrayList<String>) mA.clone();
+
+ 		String randomOs = oS.get(indiceRandom);
+ 		
+ 		
+ 	}
  	
 	public static void createListMachines(){
 		System.out.println("creation des listes pour chaque machine");  //liste d'operations (initialement vides) pour chaque machines
