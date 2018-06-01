@@ -50,13 +50,6 @@ public class Main {
  		
  	}
  	
-	public static void createListMachines(){
-		System.out.println("creation des listes pour chaque machine");  //liste d'operations (initialement vides) pour chaque machines
-		for(int i=0;i<machines;i++) {
-			machinesUsed.add(false);
-		}
-		System.out.println(machinesUsed.toString());
-	}
  	public static void testAdam() {
  		
  		selectOpToDo();
