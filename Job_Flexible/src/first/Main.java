@@ -128,7 +128,7 @@ public class Main {
  		System.out.println("Temps totale: " + tempsTotale);*/
  	}
  	
- 	/*private static void functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
+ 	private static void functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
  		int timeLeft;
  		int tempsExec = 0, tempsParallele = 0;
  		Operation op;
@@ -137,15 +137,17 @@ public class Main {
  			if(!machinesUsed.contains(machineUsing)){
  				machinesUsed.add(machineUsing);
  			tabJobs[op.getNumJob()].increaseCmptOpFinished();
- 			//tempsExec = machinesUsed[machineUsed.nomMachine-1];
-				//System.out.println(machineUsed.nomMachine-1 + ": " + machineUsed.timeOperation);
-				/*if(tempsExec > tempsParallele) {
+ 			/*tempsExec = machinesUsed[machineUsed.nomMachine-1];
+				System.out.println(machineUsed.nomMachine-1 + ": " + machineUsed.timeOperation);
+				if(tempsExec > tempsParallele) {
 					tempsParallele = tempsExec;
-				}
+				}*/
  			}
+ 			
+ 		machinesUsed.clear();
  		}
  		
- 	}*/
+ 	}
  	
  	private static void refreshMA(Operation op, Tuple machine) {
  		String name = op.getNameOperation();
