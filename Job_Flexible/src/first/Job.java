@@ -98,5 +98,9 @@ public class Job {
 		operationsRestantes.remove(0);
 	}
 	
+	public void increaseCmptOpFinished(){
+		cmptOpFinished++;
+	}
+	
 	
 }

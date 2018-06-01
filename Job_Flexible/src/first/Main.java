@@ -129,42 +129,43 @@ public class Main {
  		System.out.println("Temps totale: " + tempsTotale);*/
  	}
  	
- 	private static void functionObjective() {
+ 	/*private static void functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
  		int timeLeft;
  		int tempsExec = 0, tempsParallele = 0;
  		Operation op;
- 		for(int i=0;i<oS.size();i++) {
- 			op = oS.get(i);
- 			
+ 		for(int i=0;i<os.size();i++) {
+ 			op = os.get(i);
+ 			if(!machinesUsed.contains(machineUsing)){
+ 				machinesUsed.add(machineUsing);
+ 			tabJobs[op.getNumJob()].increaseCmptOpFinished();
  			//tempsExec = machinesUsed[machineUsed.nomMachine-1];
 				//System.out.println(machineUsed.nomMachine-1 + ": " + machineUsed.timeOperation);
 				/*if(tempsExec > tempsParallele) {
 					tempsParallele = tempsExec;
-				}*/
+				}
+ 			}
  		}
  		
- 	}
+ 	}*/
  	
  	private static void refreshMA(Operation op, Tuple machine) {
  		String name = op.getNameOperation();
- 		String numOp = name.substring(1, 2);
- 		String numJob = String.valueOf(Integer.parseInt(name.substring(3, 4))+1);
- 		int i = 0, position;
- 		Operation test;
- 		boolean stop = false;
+ 		int numOp = Integer.parseInt(name.substring(1, 2));
+ 		int numJob = Integer.parseInt(name.substring(3, 4));
+ 		boolean stop = true;
+ 		int indice = 0;
+ 		System.out.println(machine+ " mm " + numJob + "mm " + numOp);
+ 		System.out.println("");
  		
- 		while(i<mA.size() && !stop) {
- 			System.out.println(oS.toString()+ " a gegez " + i);
- 			test = oS.get(i);
- 			if (test != null && test.getNumJob() == Integer.parseInt(numJob)) {
- 				position = Integer.parseInt(numOp)+i;
- 				//System.out.println(String.valueOf(machine));
- 				mA.set(position,machine);
- 				stop = true;
- 			}
- 			i++;
- 			
+ 		for(int i=0;i!=numJob;i++){
+ 				indice += tabJobs[i].getNbOperations();
  		}
+ 		indice += numOp;
+ 		
+ 		
+ 		System.out.println(indice);
+ 		mA.set(indice, machine);
+
  		
  	}
  	
