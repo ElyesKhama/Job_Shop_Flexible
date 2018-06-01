@@ -33,6 +33,7 @@ public class Main {
 		//createPopulation();
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
+		System.out.println("La solution est réalisable ? : "+ checkFaisability());
 		//tutorial1();
 	}
  	
@@ -214,19 +215,17 @@ public class Main {
             }
 	}
 
-	public void checkFaisability() {	
-	//	OS=[1,2,3,1,2,3,1,2]   Operation
-	// 	MA=[(1,10),(2,5),(3,8),(4,1),(5,2).....]	Tuple
+	public static boolean checkFaisability() {	
 		
 		boolean faisability = true;
-		int numJob = 1;	//tu commences par le job 1
-		int indiceMa = 0;	//commence par l'operation indice 0 dans OS
-		
+		int numJob = 0;	
+		int indiceMa=0;
 		while(numJob<jobs) {
 			int i;
 			for(i=0;i<oS.size();i++) {
-				if(i==numJob) {
-					Operation op = oS.get(i);
+				Operation op = oS.get(i);
+				int numJobOp = Character.getNumericValue((op.getNameOperation().charAt(3)));
+				if(numJobOp==numJob) {
 					Tuple[] tuple = op.getMachineTime();
 					int compteur = 0;
 					int j;
@@ -238,11 +237,12 @@ public class Main {
 					if(compteur == 0) {
 						faisability = false;
 					}
+					indiceMa++;
 				}
-				indiceMa++;
 			}
 		numJob++;
 		}
+		return faisability;
 	}
 	
 	
