@@ -15,7 +15,7 @@ public class Main {
 	private static int avgMachine = 0;
 	private static Job[] tabJobs;
 	private static int nbJobEnded = 0;
-	private static ArrayList<Boolean> machinesUsed = new ArrayList<Boolean>();
+	private static Integer[] machinesUsed;
 	private static ArrayList<Operation> listOpToDo = new ArrayList<Operation>();
 	private static int tempsTotale = 0;
 	private static ArrayList<String> oS = new ArrayList<String>();
@@ -57,6 +57,13 @@ public class Main {
 		}
 		System.out.println(machinesUsed.toString());
 	}
+ 	public static void testAdam() {
+ 		
+ 		selectOpToDo();
+ 		//System.out.println("Opération à faire : " + listOpToDo.toString() );
+ 		doOp();
+ 		//System.out.println("Opérations restantes : " + listOpToDo.toString());
+ 	}
  	
  	private static void selectOpToDo() {
  		Operation operation = null;
@@ -83,6 +90,35 @@ public class Main {
  		return contain;
  	}
  	
+ 	private static void doOp() {
+ 		Tuple machineUsed;
+ 		int timeLeft;
+ 		int tempsParallele = 0, tempsExec = 0;
+ 		
+ 		for(int j=0;j<listOpToDo.size();j++) {
+ 			
+ 			machineUsed = listOpToDo.get(j).getMachineTime()[0];
+ 			timeLeft = machinesUsed[machineUsed.nomMachine-1];
+ 			
+ 			if(timeLeft < 1){
+ 				machinesUsed[machineUsed.nomMachine-1] += machineUsed.timeOperation;
+ 				tempsExec = machinesUsed[machineUsed.nomMachine-1];
+ 				System.out.println(machineUsed.nomMachine-1 + ": " + machineUsed.timeOperation);
+ 				if(tempsExec > tempsParallele) {
+ 					tempsParallele = tempsExec;
+ 				}
+ 				
+ 				refreshMA(listOpToDo.remove(j), machineUsed.nomMachine);
+ 		 		//System.out.println(mA.toString());
+ 				j--;
+ 			}
+ 			
+ 		}
+ 		refreshMUtime(tempsParallele);
+ 		tempsTotale += tempsParallele;
+ 		System.out.println("Temps totale: " + tempsTotale);
+ 	}
+ 	
  	private static void refreshMA(Operation op, int machine) {
  		String name = op.getNameOperation();
  		String numOp = name.substring(1, 2);
@@ -105,72 +141,12 @@ public class Main {
  		
  	}
  	
- 	private static void doOp2() {
- 		Tuple machineUsed;
- 		boolean usedOrNot = false;
- 		int tempsParallele = 0, tempsExec = 0;
- 		
- 		for(int j=0;j<listOpToDo.size();j++) {
- 			
- 			machineUsed = listOpToDo.get(j).getMachineTime()[0];
- 			usedOrNot = machinesUsed.get(machineUsed.nomMachine-1);
- 			
- 			if(!usedOrNot){
- 				machinesUsed.set(machineUsed.nomMachine-1, true);
- 				tempsExec = machineUsed.timeOperation;
-
- 				if(tempsExec > tempsParallele) {
- 					tempsParallele = tempsExec;
- 				}
- 				else {
- 					
- 				}
- 				//System.out.println(listOpToDo.toString());
- 				refreshMA(listOpToDo.remove(j), machineUsed.nomMachine);
- 		 		//System.out.println(mA.toString());
- 				j--;
- 			}
- 			else {
- 			}
- 				
+ 	private static void refreshMUtime(int time) {
+ 		for(int i=0;i<machinesUsed.length;i++) {
+ 			machinesUsed[i] -= time;
  		}
  	}
- 	
- 	private static void doOp() {
- 		ArrayList<Integer> listMachinesUsed = new ArrayList<Integer>();
- 		Tuple machineUsed;
- 		int tempsParallele = 0, tempsExec = 0;
- 		
- 		for(int j=0;j<listOpToDo.size();j++) {
- 			machineUsed = listOpToDo.get(j).getMachineTime()[0];
- 			
- 			if(!listMachinesUsed.contains(machineUsed.nomMachine)) {
- 				
- 				listMachinesUsed.add(machineUsed.nomMachine);
- 				tempsExec = machineUsed.timeOperation;
-
- 				if(tempsExec > tempsParallele)
- 					tempsParallele = tempsExec;
- 				//System.out.println(listOpToDo.toString());
- 				refreshMA(listOpToDo.remove(j), machineUsed.nomMachine);
-
- 		 		//System.out.println(mA.toString());
- 				j--;
- 				
- 			}
- 		}
- 		tempsTotale += tempsParallele;
- 	}
- 	
- 	public static void testAdam() {
- 		
- 		selectOpToDo();
- 		//System.out.println("Opération à faire : " + listOpToDo.toString() );
- 		doOp();
- 		//System.out.println("Temps après opérations : " + tempsTotale);
- 		//System.out.println("Opérations restantes : " + listOpToDo.toString());
- 	}
-
+ 
 //TODO: Pour chaque machine, une liste d'opérations pouvant(devant) s'effectuer dessus
 
 	public static void readFile(String file) {
@@ -210,6 +186,13 @@ public class Main {
 	}
 
 //TODO: Tant que notre voisinage est meilleur --> on continue d'en rechercher sinon on arrete
+	
+	public static void createListMachines(){
+		System.out.println("creation des listes pour chaque machine");
+		machinesUsed = new Integer[machines];  //liste d'operations (initialement vides) pour chaque machines
+		for(int i=0;i<machinesUsed.length;i++) 
+			machinesUsed[i] = 0;
+	}
 	
 	private static void tutorial1() {
 		ArrayList<Operation> listOperations;
