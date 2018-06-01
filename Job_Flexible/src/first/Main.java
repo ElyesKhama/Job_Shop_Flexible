@@ -33,7 +33,7 @@ public class Main {
 		//createPopulation();
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
-		checkFaisability();
+		System.out.println("La solution est réalisable ? : "+ checkFaisability());
 		//tutorial1();
 	}
  	
@@ -213,28 +213,21 @@ public class Main {
             }
 	}
 
-	public static void checkFaisability() {	
-	//	OS=[1,2,3,1,2,3,1,2]   Operation
-	// 	MA=[(1,10),(2,5),(3,8),(4,1),(5,2).....]	Tuple
+	public static boolean checkFaisability() {	
 		
 		boolean faisability = true;
-		int numJob = 0;	//tu commences par le job 1
+		int numJob = 0;	
 		int indiceMa=0;
 		while(numJob<jobs) {
 			int i;
-			//indiceMa = 0;	//commence par l'operation indice 0 dans OS
 			for(i=0;i<oS.size();i++) {
 				Operation op = oS.get(i);
 				int numJobOp = Character.getNumericValue((op.getNameOperation().charAt(3)));
-				System.out.println("numJobop : "+ numJobOp);
 				if(numJobOp==numJob) {
-					System.out.println("OUIIII");
 					Tuple[] tuple = op.getMachineTime();
 					int compteur = 0;
 					int j;
 					for(j=0;j<tuple.length;j++) {
-						System.out.println("indicema :"+indiceMa);
-						System.out.println("a voir ici \n"+tuple[j] + "\n" + mA.get(indiceMa));
 						if(tuple[j].equals(mA.get(indiceMa))) {
 							compteur++;
 						}
@@ -242,15 +235,12 @@ public class Main {
 					if(compteur == 0) {
 						faisability = false;
 					}
-					System.out.println("Faisabilité : "+faisability);
 					indiceMa++;
 				}
 			}
 		numJob++;
-		System.out.println("Jincremente numjob! numjob: "+numJob);
-
 		}
-		System.out.println("Faisabilité : "+faisability);
+		return faisability;
 	}
 	
 	
