@@ -192,6 +192,38 @@ public class Main {
             }
 	}
 
+	public void checkFaisability() {	
+	//	OS=[1,2,3,1,2,3,1,2]   Operation
+	// 	MA=[(1,10),(2,5),(3,8),(4,1),(5,2).....]	Tuple
+		
+		boolean faisability = true;
+		int numJob = 1;	//tu commences par le job 1
+		int indiceMa = 0;	//commence par l'operation indice 0 dans OS
+		
+		while(numJob<jobs) {
+			int i;
+			for(i=0;i<oS.size();i++) {
+				if(i==numJob) {
+					Operation op = oS.get(i);
+					Tuple[] tuple = op.getMachineTime();
+					int compteur = 0;
+					int j;
+					for(j=0;j<tuple.length;j++) {
+						if(tuple[j].equals(mA.get(indiceMa))) {
+							compteur++;
+						}
+					}
+					if(compteur == 0) {
+						faisability = false;
+					}
+				}
+				indiceMa++;
+			}
+		numJob++;
+		}
+	}
+	
+	
 //TODO: Tant que notre voisinage est meilleur --> on continue d'en rechercher sinon on arrete
 	
 	public static void createListMachines(){
