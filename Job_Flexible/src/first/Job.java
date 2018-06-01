@@ -5,6 +5,7 @@ public class Job {
 	private int numJob;
 	private String sentence = null;
 	private int nbOperations = 0;
+	private int cmptOpFinished = 0;
 	private ArrayList<Operation> operationsRestantes = new ArrayList<Operation>();   
 	private ArrayList<Operation> operationsTotales = new ArrayList<Operation>();
 	

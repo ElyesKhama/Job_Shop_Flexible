@@ -13,7 +13,7 @@ public class Tuple {
 	public String toString() {
 	  String ret = "";
 	  
-	  ret += "Numéro machine : " + this.nomMachine + ", temps d'exécution : " + this.timeOperation;
+	  ret += "M:" + this.nomMachine + "|t:" + this.timeOperation;
 	  
 	  return ret;
 	}
