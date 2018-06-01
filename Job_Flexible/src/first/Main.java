@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Main {
 	
@@ -33,21 +32,36 @@ public class Main {
 		createPopulation();
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
-		//printTabJobs();
 		//tutorial1();
 	}
  	
+ 	/*Combiner 2 solutions (parents) = croisement ( -> enfants) -> intensification
+ 	 			-> les meilleures solutions-parents donnent les meilleures solutions-enfants
+ 	  Modifier 1 solution = Mutation : permet de diversifier l’ensemble de solutions*/
+ 	
  	public static void createPopulation() {
  		int nbPopulation = 100;
- 		int nbTaches = mA.size();
- 		int indiceRandom = (int) (Math.random() * nbTaches);
+ 		int indiceRandom = (int) (Math.random() * mA.size())+1;
  		
  		ArrayList<String> maTemp = new ArrayList<String>();
  		maTemp = (ArrayList<String>) mA.clone();
 
- 		String randomOs = oS.get(indiceRandom);
+ 		Operation op =  getOperationToMute(indiceRandom, 0);
  		
- 		
+ 		System.out.println(indiceRandom + "qui donne : " + op.getNameOperation());
+ 	}
+ 	
+ 	private static Operation getOperationToMute(int indiceRandom, int job) {
+ 		System.out.println("Début : indice => " + indiceRandom + ", job : " + (job+1) );
+ 		int nbOperations = tabJobs[job].getNbOperations();
+ 		Operation op;
+ 		if(tabJobs.length < job || indiceRandom > oS.size())
+ 			op = null;
+ 	    else if (indiceRandom <= nbOperations) 
+ 			op = tabJobs[job].getOperationsTotales().get(indiceRandom-1);
+ 		else
+ 			op = getOperationToMute(indiceRandom-nbOperations,++job);
+ 		return op;
  	}
  	
  	public static void testAdam() {
