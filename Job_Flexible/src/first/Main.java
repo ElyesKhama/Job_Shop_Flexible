@@ -31,13 +31,20 @@ public class Main {
 		
 		while(nbJobEnded < jobs)
 			testAdam();
-
+		
+		System.out.println("faisable:" + checkFaisability(oS,mA)+", time: "+functionObjective(oS,mA) );
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
-		createPopulation();
-
-		System.out.println(oS.toString());
+		/*while(oSPop.size() < 7)
+			mutationMachines();*/
+		ArrayList<Operation> oSTmp = (ArrayList<Operation>) oS.clone();
+		do{
+				oSTmp = mutationOperation();
+		}while(oSTmp.equals(oS) || !checkFaisability(oSTmp,mA));
+		
+		System.out.println(oSTmp.toString()+checkFaisability(oSTmp,mA));
 		System.out.println(mA.toString());
+		System.out.println("time: "+functionObjective(oSTmp,mA));
 
 		//System.out.println("Temps de réalisation :" + functionObjective(oS,mA));
 		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
@@ -53,19 +60,66 @@ public class Main {
  	 			-> les meilleures solutions-parents donnent les meilleures solutions-enfants
  	  Modifier 1 solution = Mutation : permet de diversifier l’ensemble de solutions*/
  	
- 	public static void createPopulation() {
- 		int nbPopulation = 100;
- 		int iRandMachine;
- 		int iRandOp = (int) (Math.random() * mA.size());
- 		Operation opMut = oS.get(iRandOp);
- 		if(opMut.getMachinesNeeded() > 1) {
- 			iRandMachine = (int) (Math.random()*opMut.getMachinesNeeded());
- 			mA.set(getIndexMa(opMut), opMut.getMachineTime()[iRandMachine]);
+ 	private static void mutationMachines() {
+ 		int iRandMachine=0;
+ 		int iRandOp = 0;
+ 		Operation opMut = null;
+ 		int opMachines = 1;
+ 		ArrayList<Tuple> mATmp = (ArrayList<Tuple>) mA.clone();
+ 		
+ 		
+ 		while(opMachines == 1) {
+ 			iRandOp = (int) (Math.random() * mA.size());
+ 			opMut = oS.get(iRandOp);
+ 			opMachines = opMut.getMachinesNeeded();
  		}
  		
- 		System.out.println("Machine n*"+iRandOp + ", opération n*"+iRandOp);
+ 		while(iRandMachine == 0)
+ 			iRandMachine = (int) (Math.random()* opMut.getMachinesNeeded());
+ 			
+ 		mATmp.set(getIndexMa(opMut), opMut.getMachineTime()[iRandMachine]);
+ 		
+ 		if(!mAPop.contains(mATmp) && checkFaisability(oS,mATmp)) {
+ 			mAPop.add(mATmp);
+ 			oSPop.add(oS);
+ 		}
+ 		
+ 		System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
+ 		System.out.println(mAPop.toString());
   	}
-
+ 	
+ 	private static ArrayList<Operation> mutationOperation() {
+ 		int iToSwap = 0;
+ 		int iRandOp = (int) (Math.random()* oS.size());
+ 		Operation op,op2;
+ 		int indexMA = getIndexMa(oS.get(iRandOp));
+ 		int machineToSwap = mA.get(indexMA).nomMachine;
+ 		int indexMATest;
+ 		int machineTest;
+ 		ArrayList<Operation> oSTmp = (ArrayList<Operation>) oS.clone();
+ 		boolean stop = false;
+ 		
+ 		while(iToSwap<oS.size() && !stop) {
+ 			indexMATest = getIndexMa(oS.get(iToSwap));
+ 			machineTest = mA.get(indexMATest).nomMachine;
+ 			op = oS.get(iRandOp);
+ 			op2 = oS.get(iToSwap);
+ 			
+ 			if( indexMATest != indexMA && machineTest == machineToSwap && op.getNumJob() != op2.getNumJob()) {
+ 				op = oS.get(iRandOp);
+ 				oSTmp.set(iRandOp, oS.get(iToSwap));
+ 				oSTmp.set(iToSwap, op);
+ 				stop = true;
+ 				System.out.println("On est rentré");
+ 				return oSTmp;
+ 			}
+ 			else
+ 				iToSwap++;
+ 		}
+ 		System.out.println("zebi");
+ 		return null;
+ 				
+ 	}
  	
  	private static void cross(int os1,int os2) {
  		int indiceCut = (int)Math.random() * oS.size();
@@ -263,11 +317,11 @@ public class Main {
             }
 	}
 
-	public static boolean checkFaisability() {	
+	public static boolean checkFaisability(ArrayList<Operation>os,ArrayList<Tuple> ma) {	
 		
 		boolean precedesor = true, goodMachine = false;
 		int indice;
-		Integer verif[] = new Integer[oS.size()];
+		Integer verif[] = new Integer[os.size()];
 		String name;
 		Tuple[] tuple;
 		Operation op;
@@ -276,16 +330,16 @@ public class Main {
  		for(int v=0;v<verif.length;v++)
  			verif[v] = 0;
  		
-		for(int z=0;z<oS.size();z++) {
+		for(int z=0;z<os.size();z++) {
 			goodMachine=false;
-			op = oS.get(z);
+			op = os.get(z);
 			name = op.getNameOperation();
 			numOp = Integer.parseInt(name.substring(1, 2));
 			tuple = op.getMachineTime();
 			indice = getIndexMa(op);
 			
 			for(int j=0;j<tuple.length;j++) {
-				if(tuple[j].equals(mA.get(indice)))
+				if(tuple[j].equals(ma.get(indice)))
 					goodMachine = true;
 			}
 			
@@ -308,6 +362,7 @@ public class Main {
 	
 	private static void createListMachines(){
 		System.out.println("creation des listes pour chaque machine");
+		machinesUsed.clear();
 		for(int i=0;i<machines;i++) 
 			machinesUsed.add(0);
 	}

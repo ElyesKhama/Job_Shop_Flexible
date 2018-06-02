@@ -71,5 +71,12 @@ public class Operation {
 	public int getNumJob(){
 		return numJob;
 	}
+	
+	public boolean equals(Operation op) {
+		boolean ret = false;
+		if(this.nameOperation == op.nameOperation)
+			ret = true;
+		return ret;
+	}
 
 }
