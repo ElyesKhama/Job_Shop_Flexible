@@ -166,7 +166,7 @@ public class Main {
  		System.out.println("Temps totale: " + tempsTotale);*/
  	}
  	
- 	private static int functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
+ 	/*private static int functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
  		int temps = 0;
  		int tmp;
  		int tempsExec = 0, tempsParallele = 0;
@@ -209,7 +209,7 @@ public class Main {
  			//tabJobs[op.getNumJob()].increaseCmptOpFinished();
  			}
  		return temps;
- 	}
+ 	}/
  	
  	private static int getIndexMa(Operation op) {
  		String name = op.getNameOperation();
