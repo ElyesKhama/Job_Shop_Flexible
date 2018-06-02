@@ -31,7 +31,7 @@ public class Main {
 		
 		while(nbJobEnded < jobs)
 			testAdam();
-		//createPopulation();
+		createPopulation();
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
 
@@ -54,23 +54,15 @@ public class Main {
  		int indiceRandom = (int) (Math.random() * mA.size())+1;
  		ArrayList<Tuple> maTemp = new ArrayList<Tuple>();
  		maTemp = (ArrayList<Tuple>) mA.clone();
- 		cmptOpDone=0;
- 		Operation op =  getOperationToMute(indiceRandom, 0);
- 		System.out.println(indiceRandom + "qui donne : " + op.getNameOperation());
- 	}
- 	
- 	private static Operation getOperationToMute(int indiceRandom, int job) {
- 		System.out.println("Début : indice => " + indiceRandom + ", job : " + (job+1));
- 		int nbOperations = tabJobs[job].getNbOperations();
- 		Operation op;
- 		if(tabJobs.length < job || indiceRandom > oS.size())
- 			op = null;
- 	    else if (indiceRandom <= nbOperations) 
- 			op = tabJobs[job].getOperationsTotales().get(indiceRandom-1);
- 		else
- 			op = getOperationToMute(indiceRandom-nbOperations,++job);
- 		return op;
- 	}
+ 		Operation opMut = oS.get(indiceRandom);
+ 		int machineReal = getIndexMa(opMut);
+ 		if(opMut.getMachinesNeeded() > 1) {
+ 				
+ 		}
+ 		
+ 		
+  	}
+
  	
  	private static void cross(int os1,int os2) {
  		int indiceCut = (int)Math.random() * oS.size();
@@ -89,7 +81,7 @@ public class Main {
  		System.out.println("crossover down");
  	}
  	
- 	/*public static void selection() {  //par tournoi 2 à 2
+ 	public static void selection() {  //par tournoi 2 à 2
  		int nbparents = 0;
  		int ind1 = (int) Math.random() * oSPop.size();
  		int ind2 = (int) Math.random() * oSPop.size();
@@ -115,7 +107,7 @@ public class Main {
  			mAPop.remove(solMa1);
  		}
  		
- 	}*/
+ 	}
  	
  	public static void testAdam() {
  		
