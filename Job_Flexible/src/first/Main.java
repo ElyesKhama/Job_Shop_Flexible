@@ -31,14 +31,18 @@ public class Main {
 		
 		while(nbJobEnded < jobs)
 			testAdam();
+
+		System.out.println(oS.toString());
+		System.out.println(mA.toString());
 		createPopulation();
+
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
 
-		System.out.println("Temps de réalisation :" + functionObjective(oS,mA));
-		System.out.println("La solution est réalisable ? : "+ checkFaisability());
-		System.out.println("ospop:\n"+oSPop.toString());
-		System.out.println("osma:\n"+mAPop.toString());
+		//System.out.println("Temps de réalisation :" + functionObjective(oS,mA));
+		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
+		//System.out.println("ospop:\n"+oSPop.toString());
+		//System.out.println("osma:\n"+mAPop.toString());
 
 
 		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
@@ -51,16 +55,15 @@ public class Main {
  	
  	public static void createPopulation() {
  		int nbPopulation = 100;
- 		int indiceRandom = (int) (Math.random() * mA.size())+1;
- 		ArrayList<Tuple> maTemp = new ArrayList<Tuple>();
- 		maTemp = (ArrayList<Tuple>) mA.clone();
- 		Operation opMut = oS.get(indiceRandom);
- 		int machineReal = getIndexMa(opMut);
+ 		int iRandMachine;
+ 		int iRandOp = (int) (Math.random() * mA.size());
+ 		Operation opMut = oS.get(iRandOp);
  		if(opMut.getMachinesNeeded() > 1) {
- 				
+ 			iRandMachine = (int) (Math.random()*opMut.getMachinesNeeded());
+ 			mA.set(getIndexMa(opMut), opMut.getMachineTime()[iRandMachine]);
  		}
  		
- 		
+ 		System.out.println("Machine n*"+iRandOp + ", opération n*"+iRandOp);
   	}
 
  	
@@ -145,6 +148,8 @@ public class Main {
  	private static void doOp() {
  		Tuple machineUsing;
  		Operation op;
+
+ 		System.out.println(listOpToDo.toString());
  		for(int j=0;j<listOpToDo.size();j++) {
  			
  			op = listOpToDo.get(j);
@@ -166,50 +171,40 @@ public class Main {
  		System.out.println("Temps totale: " + tempsTotale);*/
  	}
  	
- 	/*private static int functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
+ 	private static int functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
  		int temps = 0;
- 		int tmp;
- 		int tempsExec = 0, tempsParallele = 0;
- 		int indiceMachine = 0;
+ 		int tempsExec = 0, tempsParallele = 0, timeLeft =0, nameMachine;
  		Tuple machineUsing;
- 		Operation op;
  		
  		createListMachines();
+ 		int i =0;
+ 		while(i<os.size()) {
+ 			machineUsing = ma.get(getIndexMa(os.get(i))); //machine correspondante à l'opération
+ 			nameMachine = machineUsing.nomMachine-1; //numéro machine
+ 			timeLeft = machinesUsed.get(nameMachine); // temps actuel machine
  		
- 		for(int i=0;i<os.size();i++) {
- 			op = os.get(i);
- 			indiceMachine = getIndexMa(op);
- 			machineUsing = ma.get(indiceMachine);
- 			
- 			if(machinesUsed.get(machineUsing.nomMachine) < 1) {
- 				tempsExec = machineUsing.timeOperation;
- 				machinesUsed.set(machineUsing.nomMachine,tempsExec);
- 				if(tempsExec > tempsParallele) {
+ 			if(timeLeft < 1) {
+ 	 			tempsExec = machineUsing.timeOperation+timeLeft; 
+ 				machinesUsed.set(nameMachine, tempsExec);
+ 				if(tempsExec > tempsParallele);
 					tempsParallele = tempsExec;
-				}
- 				System.out.print("Used: "+machineUsing+", ");
- 				
+ 				i++;
  			}
  			else {
- 				System.out.println("");
- 				System.out.print("notUsed: "+machineUsing);
- 				temps += tempsParallele;
- 				System.out.println(", time: "+temps);
- 				for(int j=0;j<machinesUsed.size();j++) {
- 					tmp = machinesUsed.get(j);
- 					if( tmp > 0)
- 						machinesUsed.set(j, tmp-tempsParallele);
- 					}
- 					tempsExec = machineUsing.timeOperation;
- 					tempsParallele = tempsExec;
- 					
- 					machinesUsed.set(machineUsing.nomMachine,tempsExec+machinesUsed.get(machineUsing.nomMachine));
+ 				for(int j=0;j<machines;j++) {
+ 					timeLeft = machinesUsed.get(j);
+ 					if(timeLeft > 0)
+ 						machinesUsed.set(j,timeLeft - tempsParallele);
  				}
- 			
- 			//tabJobs[op.getNumJob()].increaseCmptOpFinished();
+ 				temps += tempsParallele;
+ 				tempsParallele = 0;
  			}
+
+ 			
+ 		}
+ 		temps += tempsParallele;
  		return temps;
- 	}/
+ 	}
  	
  	private static int getIndexMa(Operation op) {
  		String name = op.getNameOperation();
