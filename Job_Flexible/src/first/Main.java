@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -32,11 +33,19 @@ public class Main {
 		while(nbJobEnded < jobs)
 			testAdam();
 		
-		System.out.println("faisable:" + checkFaisability(oS,mA)+", time: "+functionObjective(oS,mA) );
+		//System.out.println("faisable:" + checkFaisability(oS,mA)+", time: "+functionObjective(oS,mA) );
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
-		/*while(oSPop.size() < 7)
-			mutationMachines();*/
+		System.out.println(" le temps final est de : "+objFunction(oS,mA));
+		while(oSPop.size() < 7) {
+			mutationMachines();
+		}
+		
+		int i;
+		for(i=0;i<mAPop.size();i++) {
+			System.out.println(" le temps final est de : "+objFunction(oS,mAPop.get(i)));
+		}
+
 		ArrayList<Operation> oSTmp = (ArrayList<Operation>) oS.clone();
 		do{
 				oSTmp = mutationOperation();
@@ -44,7 +53,8 @@ public class Main {
 		
 		System.out.println(oSTmp.toString()+checkFaisability(oSTmp,mA));
 		System.out.println(mA.toString());
-		System.out.println("time: "+functionObjective(oSTmp,mA));
+		//System.out.println("time: "+functionObjective(oSTmp,mA));
+		System.out.println(" le temps final est de : "+objFunction(oSTmp,mA));
 
 		//System.out.println("Temps de réalisation :" + functionObjective(oS,mA));
 		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
@@ -84,8 +94,8 @@ public class Main {
  			oSPop.add(oS);
  		}
  		
- 		System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
- 		System.out.println(mAPop.toString());
+ 	//	System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
+ 	//	System.out.println(mAPop.toString());
   	}
  	
  	private static ArrayList<Operation> mutationOperation() {
@@ -110,13 +120,11 @@ public class Main {
  				oSTmp.set(iRandOp, oS.get(iToSwap));
  				oSTmp.set(iToSwap, op);
  				stop = true;
- 				System.out.println("On est rentré");
  				return oSTmp;
  			}
  			else
  				iToSwap++;
  		}
- 		System.out.println("zebi");
  		return null;
  				
  	}
@@ -258,6 +266,48 @@ public class Main {
  		}
  		temps += tempsParallele;
  		return temps;
+ 	}
+ 	
+ 	public static int objFunction(ArrayList<Operation> os,ArrayList<Tuple> ma) {
+ 		int time = 0;
+ 		int[] tabDates = new int[jobs];
+ 		int[] tabMachines = new int[machines];
+ 		int i;
+ 		for(i=0;i<jobs;i++) {
+ 			tabDates[i] = 0;
+ 			tabMachines[i] = 0;
+ 		}
+ 		Operation opToDo;
+ 		int opTime;
+ 		int numJob;
+ 		for(i=0;i<os.size();i++) {
+ 			opToDo = os.get(i);
+ 			numJob = Integer.parseInt(opToDo.getNameOperation().substring(3, 4));
+ 			int indexMa = getIndexMa(opToDo);
+ 			opTime = opToDo.getTimeMachine(ma.get(indexMa).getNomMachine());  //todo : getIndexMA avec ma passé en parametre et pas tjrs mA global.
+ 		//	System.out.println("optime : "+opTime);
+ 			if(tabDates[numJob] >= tabMachines[ma.get(indexMa).getNomMachine()-1]) {
+ 				tabDates[numJob] += opTime;
+ 				tabMachines[ma.get(indexMa).getNomMachine()-1] = tabDates[numJob];
+ 			}
+ 			else {
+ 				tabMachines[ma.get(indexMa).getNomMachine()-1] += opTime;
+ 				tabDates[numJob] = tabMachines[ma.get(indexMa).getNomMachine()-1];
+ 			}
+ 	//		printTab(tabMachines);
+ 	// 		printTab(tabDates);
+ 		}
+	 	Arrays.sort(tabDates);
+	 	time = tabDates[jobs-1];
+ 		return time ;
+ 	}
+ 	
+ 	private static void printTab(int[] tab) {
+ 		int i;
+ 		for(i=0;i<tab.length;i++) {
+ 			System.out.print(tab[i]+",");
+ 		}
+ 		System.out.println("\n");
  	}
  	
  	private static int getIndexMa(Operation op) {

@@ -78,5 +78,15 @@ public class Operation {
 			ret = true;
 		return ret;
 	}
+	
+	public int getTimeMachine(int nbmachine) {
+		int i;
+		for(i=0;i<machinesNeeded;i++) {
+			if(machineTime[i].getNomMachine() == nbmachine) {
+				return machineTime[i].getTimeOperation();
+			}
+		}
+		return 0;
+	}
 
 }
