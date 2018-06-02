@@ -35,15 +35,12 @@ public class Main {
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
 
-<<<<<<< HEAD
 		System.out.println("Temps de réalisation :" + functionObjective(oS,mA));
-=======
 		System.out.println("La solution est réalisable ? : "+ checkFaisability());
 		System.out.println("ospop:\n"+oSPop.toString());
 		System.out.println("osma:\n"+mAPop.toString());
 
 
->>>>>>> 21b8a91d24d65e953aba255840f56ee879cae481
 		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
 		//tutorial1();
 	}
@@ -191,26 +188,30 @@ public class Main {
  			op = os.get(i);
  			indiceMachine = getIndexMa(op);
  			machineUsing = ma.get(indiceMachine);
- 			tempsExec = machineUsing.timeOperation;
  			
  			if(machinesUsed.get(machineUsing.nomMachine) < 1) {
- 				
+ 				tempsExec = machineUsing.timeOperation;
  				machinesUsed.set(machineUsing.nomMachine,tempsExec);
  				if(tempsExec > tempsParallele) {
 					tempsParallele = tempsExec;
 				}
+ 				System.out.print("Used: "+machineUsing+", ");
  				
  			}
  			else {
- 				System.out.println("temps:" + temps);
+ 				System.out.println("");
+ 				System.out.print("notUsed: "+machineUsing);
  				temps += tempsParallele;
+ 				System.out.println(", time: "+temps);
  				for(int j=0;j<machinesUsed.size();j++) {
  					tmp = machinesUsed.get(j);
  					if( tmp > 0)
  						machinesUsed.set(j, tmp-tempsParallele);
  					}
+ 					tempsExec = machineUsing.timeOperation;
  					tempsParallele = tempsExec;
- 					machinesUsed.set(machineUsing.nomMachine,tempsExec);
+ 					
+ 					machinesUsed.set(machineUsing.nomMachine,tempsExec+machinesUsed.get(machineUsing.nomMachine));
  				}
  			
  			//tabJobs[op.getNumJob()].increaseCmptOpFinished();
