@@ -33,6 +33,8 @@ public class Main {
 		//createPopulation();
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
+
+		System.out.println("Temps de réalisation :" + functionObjective(oS,mA));
 		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
 		//tutorial1();
 	}
@@ -125,6 +127,7 @@ public class Main {
  	
  	private static int functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
  		int temps = 0;
+ 		int tmp;
  		int tempsExec = 0, tempsParallele = 0;
  		int indiceMachine = 0;
  		Tuple machineUsing;
@@ -147,20 +150,19 @@ public class Main {
  				
  			}
  			else {
+ 				System.out.println("temps:" + temps);
  				temps += tempsParallele;
- 				initListMachines();
- 			}
+ 				for(int j=0;j<machinesUsed.size();j++) {
+ 					tmp = machinesUsed.get(j);
+ 					if( tmp > 0)
+ 						machinesUsed.set(j, tmp-tempsParallele);
+ 					}
+ 					tempsParallele = tempsExec;
+ 					machinesUsed.set(machineUsing.nomMachine,tempsExec);
+ 				}
  			
- 			tabJobs[op.getNumJob()].increaseCmptOpFinished();
- 			/*tempsExec = machinesUsed[machineUsed.nomMachine-1];
-				System.out.println(machineUsed.nomMachine-1 + ": " + machineUsed.timeOperation);
-				if(tempsExec > tempsParallele) {
-					tempsParallele = tempsExec;
-				}*/
+ 			//tabJobs[op.getNumJob()].increaseCmptOpFinished();
  			}
- 			
- 		
- 		
  		return temps;
  	}
  	
