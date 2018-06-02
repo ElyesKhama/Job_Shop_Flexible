@@ -15,7 +15,7 @@ public class Main {
 	private static int cmptOpDone = 0;
 	private static Job[] tabJobs;
 	private static int nbJobEnded = 0;
-	private static ArrayList<Tuple> machinesUsed;
+	private static ArrayList<Integer> machinesUsed = new ArrayList<Integer>();
 	private static ArrayList<Operation> listOpToDo = new ArrayList<Operation>();
 	private static int tempsTotale = 0;
 	private static ArrayList<Operation> oS = new ArrayList<Operation>();
@@ -33,7 +33,7 @@ public class Main {
 		//createPopulation();
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
-		System.out.println("La solution est réalisable ? : "+ checkFaisability());
+		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
 		//tutorial1();
 	}
  	
@@ -102,22 +102,16 @@ public class Main {
  	private static void doOp() {
  		Tuple machineUsing;
  		Operation op;
- 		//int timeLeft;
  		for(int j=0;j<listOpToDo.size();j++) {
  			
  			op = listOpToDo.get(j);
  			machineUsing = op.getMachineTime()[0];
- 			
- 			if(!machinesUsed.contains(machineUsing)){
- 				machinesUsed.add(machineUsing);
- 				//tempsExec = machinesUsed[machineUsed.nomMachine-1];
- 				//System.out.println(machineUsed.nomMachine-1 + ": " + machineUsed.timeOperation);
- 				/*if(tempsExec > tempsParallele) {
- 					tempsParallele = tempsExec;
- 				}*/
+ 			if(!machinesUsed.contains(machineUsing.nomMachine)){
+ 				machinesUsed.add(machineUsing.nomMachine);
  				oS.set(cmptOpDone,op);
- 				refreshMA(listOpToDo.remove(j), machineUsing);
- 		 		//System.out.println(mA.toString());
+ 				
+ 				int indice = getIndexMa(listOpToDo.remove(j));
+ 				mA.set(indice, machineUsing);
  				j--;
  				cmptOpDone++;
  			}
@@ -129,14 +123,34 @@ public class Main {
  		System.out.println("Temps totale: " + tempsTotale);*/
  	}
  	
- 	private static void functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
- 		int timeLeft;
+ 	private static int functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
+ 		int temps = 0;
  		int tempsExec = 0, tempsParallele = 0;
+ 		int indiceMachine = 0;
+ 		Tuple machineUsing;
  		Operation op;
+ 		
+ 		createListMachines();
+ 		
  		for(int i=0;i<os.size();i++) {
  			op = os.get(i);
- 			if(!machinesUsed.contains(machineUsing)){
- 				machinesUsed.add(machineUsing);
+ 			indiceMachine = getIndexMa(op);
+ 			machineUsing = ma.get(indiceMachine);
+ 			tempsExec = machineUsing.timeOperation;
+ 			
+ 			if(machinesUsed.get(machineUsing.nomMachine) < 1) {
+ 				
+ 				machinesUsed.set(machineUsing.nomMachine,tempsExec);
+ 				if(tempsExec > tempsParallele) {
+					tempsParallele = tempsExec;
+				}
+ 				
+ 			}
+ 			else {
+ 				temps += tempsParallele;
+ 				initListMachines();
+ 			}
+ 			
  			tabJobs[op.getNumJob()].increaseCmptOpFinished();
  			/*tempsExec = machinesUsed[machineUsed.nomMachine-1];
 				System.out.println(machineUsed.nomMachine-1 + ": " + machineUsed.timeOperation);
@@ -145,30 +159,21 @@ public class Main {
 				}*/
  			}
  			
- 		machinesUsed.clear();
- 		}
  		
+ 		
+ 		return temps;
  	}
  	
- 	private static void refreshMA(Operation op, Tuple machine) {
+ 	private static int getIndexMa(Operation op) {
  		String name = op.getNameOperation();
  		int numOp = Integer.parseInt(name.substring(1, 2));
  		int numJob = Integer.parseInt(name.substring(3, 4));
- 		boolean stop = true;
  		int indice = 0;
- 		System.out.println(machine+ " mm " + numJob + "mm " + numOp);
- 		System.out.println("");
  		
- 		for(int i=0;i!=numJob;i++){
+ 		for(int i=0;i!=numJob;i++)
  				indice += tabJobs[i].getNbOperations();
- 		}
  		indice += numOp;
- 		
- 		
- 		System.out.println(indice);
- 		mA.set(indice, machine);
-
- 		
+ 		return indice;
  	}
  	
  	/*private static void refreshMUtime(int time) {
@@ -192,7 +197,8 @@ public class Main {
                 	avgMachine = Integer.parseInt(sentence.substring(8,9));
                     
                     tabJobs = new Job[jobs];
-                    createListMachines();
+
+             		createListMachines();
                 }
                     
                 for(int i = 0;i<jobs;i++) {
@@ -217,42 +223,56 @@ public class Main {
 
 	public static boolean checkFaisability() {	
 		
-		boolean faisability = true;
-		int numJob = 0;	
-		int indiceMa=0;
-		while(numJob<jobs) {
-			int i;
-			for(i=0;i<oS.size();i++) {
-				Operation op = oS.get(i);
-				int numJobOp = Character.getNumericValue((op.getNameOperation().charAt(3)));
-				if(numJobOp==numJob) {
-					Tuple[] tuple = op.getMachineTime();
-					int compteur = 0;
-					int j;
-					for(j=0;j<tuple.length;j++) {
-						if(tuple[j].equals(mA.get(indiceMa))) {
-							compteur++;
-						}
-					}
-					if(compteur == 0) {
-						faisability = false;
-					}
-					indiceMa++;
-				}
+		boolean precedesor = true, goodMachine = false;
+		int indice;
+		Integer verif[] = new Integer[oS.size()];
+		String name;
+		Tuple[] tuple;
+		Operation op;
+ 		int numOp;
+		
+ 		for(int v=0;v<verif.length;v++)
+ 			verif[v] = 0;
+ 		
+		for(int z=0;z<oS.size();z++) {
+			goodMachine=false;
+			op = oS.get(z);
+			name = op.getNameOperation();
+			numOp = Integer.parseInt(name.substring(1, 2));
+			tuple = op.getMachineTime();
+			indice = getIndexMa(op);
+			
+			for(int j=0;j<tuple.length;j++) {
+				if(tuple[j].equals(mA.get(indice)))
+					goodMachine = true;
 			}
-		numJob++;
+			
+			for(int i=0;i<verif.length;i++) {
+				if(numOp != 0 && verif[indice-1] != 1)
+					precedesor = false;
+			}
+			if(verif[indice] != 1)
+				verif[indice] = 1;
+			else
+				precedesor = false;
+			
 		}
-		return faisability;
+		
+		return precedesor && goodMachine;
 	}
 	
 	
 //TODO: Tant que notre voisinage est meilleur --> on continue d'en rechercher sinon on arrete
 	
-	public static void createListMachines(){
+	private static void createListMachines(){
 		System.out.println("creation des listes pour chaque machine");
-		machinesUsed = new ArrayList<Tuple>();  //liste d'operations (initialement vides) pour chaque machines
 		for(int i=0;i<machines;i++) 
-			machinesUsed.add(new Tuple(0,0));
+			machinesUsed.add(0);
+	}
+	
+	private static void initListMachines() {
+		for(int i=0;i<machines;i++) 
+			machinesUsed.set(i,0);
 	}
 	
 	private static void tutorial1() {
