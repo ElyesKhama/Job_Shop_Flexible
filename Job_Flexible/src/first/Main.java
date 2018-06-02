@@ -33,31 +33,46 @@ public class Main {
 		while(nbJobEnded < jobs)
 			testAdam();
 		
+		oSPop.add(oS);
+		mAPop.add(mA);
+		
 		//System.out.println("faisable:" + checkFaisability(oS,mA)+", time: "+functionObjective(oS,mA) );
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
-		System.out.println(" le temps final est de : "+objFunction(oS,mA));
-		while(oSPop.size() < 7) {
-			mutationMachines();
-		}
-		
+		 
 		int i;
-		for(i=0;i<mAPop.size();i++) {
-			System.out.println(" le temps final est de : "+objFunction(oS,mAPop.get(i)));
+		for(i=0;i<1;i++) {
+			mutationOperation(oSPop.get(i),mAPop.get(i));
+		}
+		while(oSPop.size()<14) {
+			mutationMachines(oSPop.get(0),mAPop.get(0));
+			mutationMachines(oSPop.get(1),mAPop.get(1));
+		}
+		System.out.println("taille os/ma:"+mAPop.size());
+		
+		printVector(oSPop,mAPop);
+		
+		int nbBeforeSelect = oSPop.size();
+		
+		/*while(oSPop.size() > nbBeforeSelect/2)
+			selection(); */
+
+		System.out.println("taille os/ma:"+mAPop.size());
+
+		/*while(oSPop.size() < 7) {
+			mutationMachines(oSPop.get(i),mAPop.get(i));
 		}
 
-		ArrayList<Operation> oSTmp = (ArrayList<Operation>) oS.clone();
-		do{
-				oSTmp = mutationOperation();
-		}while(oSTmp.equals(oS) || !checkFaisability(oSTmp,mA));
+		while(oSPop.size() < 9) {
+			mutationOperation(oSPop.get(i),mAPop.get(i));
+			System.out.println("ok ");
+		}
+		System.out.println(oSPop.toString());*/
 		
-		System.out.println(oSTmp.toString()+checkFaisability(oSTmp,mA));
-		System.out.println(mA.toString());
-		//System.out.println("time: "+functionObjective(oSTmp,mA));
-		System.out.println(" le temps final est de : "+objFunction(oSTmp,mA));
-
-		//System.out.println("Temps de réalisation :" + functionObjective(oS,mA));
-		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
+		for(i=0;i<oSPop.size();i++) {
+			System.out.println(" le temps final est de : "+objFunction(oSPop.get(i),mAPop.get(i)));
+		}
+		
 		//System.out.println("ospop:\n"+oSPop.toString());
 		//System.out.println("osma:\n"+mAPop.toString());
 
@@ -70,7 +85,7 @@ public class Main {
  	 			-> les meilleures solutions-parents donnent les meilleures solutions-enfants
  	  Modifier 1 solution = Mutation : permet de diversifier l’ensemble de solutions*/
  	
- 	private static void mutationMachines() {
+ 	private static void mutationMachines(ArrayList<Operation> oS, ArrayList<Tuple> mA) {
  		int iRandMachine=0;
  		int iRandOp = 0;
  		Operation opMut = null;
@@ -92,13 +107,25 @@ public class Main {
  		if(!mAPop.contains(mATmp) && checkFaisability(oS,mATmp)) {
  			mAPop.add(mATmp);
  			oSPop.add(oS);
+ 	 		System.out.println(mATmp.toString());
+
  		}
+ 		
  		
  	//	System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
  	//	System.out.println(mAPop.toString());
   	}
  	
- 	private static ArrayList<Operation> mutationOperation() {
+ 	private static void printVector(ArrayList<ArrayList<Operation>> list1, ArrayList<ArrayList<Tuple>> list2) {
+ 		int i;
+ 		for(i=0;i<list1.size();i++) {
+ 			System.out.println(list1.get(i));
+ 			System.out.println(list2.get(i));
+ 			System.out.println("\n");
+ 		}
+ 	}
+ 	
+ 	private static void mutationOperation(ArrayList<Operation> oS, ArrayList<Tuple> mA) {
  		int iToSwap = 0;
  		int iRandOp = (int) (Math.random()* oS.size());
  		Operation op,op2;
@@ -120,12 +147,15 @@ public class Main {
  				oSTmp.set(iRandOp, oS.get(iToSwap));
  				oSTmp.set(iToSwap, op);
  				stop = true;
- 				return oSTmp;
+ 				if(!oSPop.contains(oSTmp) && checkFaisability(oSTmp,mA)) {
+	 				oSPop.add(oSTmp);
+	 				mAPop.add(mA);
+	 				System.out.println("jai rajouté un os : "+ oSTmp.toString());
+ 				}
  			}
  			else
  				iToSwap++;
  		}
- 		return null;
  				
  	}
  	
@@ -154,14 +184,13 @@ public class Main {
  		while(ind1 != ind2) { //si ils sont égaux c'est pas bon
  			ind2 = (int) Math.random() * oSPop.size();
  		}
- 		
  		ArrayList<Operation> solOs1 = oSPop.get(ind1);
  		ArrayList<Tuple> solMa1 = mAPop.get(ind1);
- 		ArrayList<Operation> solOs2 = oSPop.get(ind1);
- 		ArrayList<Tuple> solMa2 = mAPop.get(ind1);
+ 		ArrayList<Operation> solOs2 = oSPop.get(ind2);
+ 		ArrayList<Tuple> solMa2 = mAPop.get(ind2);
 
- 		int f1 = functionObjective(solOs1, solMa1);
- 		int f2 = functionObjective(solOs2, solMa2);
+ 		int f1 = objFunction(solOs1, solMa1);
+ 		int f2 = objFunction(solOs2, solMa2);
  		
  		if(f1<=f2) {
  			oSPop.remove(solOs2);
@@ -233,41 +262,6 @@ public class Main {
  		System.out.println("Temps totale: " + tempsTotale);*/
  	}
  	
- 	private static int functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
- 		int temps = 0;
- 		int tempsExec = 0, tempsParallele = 0, timeLeft =0, nameMachine;
- 		Tuple machineUsing;
- 		
- 		createListMachines();
- 		int i =0;
- 		while(i<os.size()) {
- 			machineUsing = ma.get(getIndexMa(os.get(i))); //machine correspondante à l'opération
- 			nameMachine = machineUsing.nomMachine-1; //numéro machine
- 			timeLeft = machinesUsed.get(nameMachine); // temps actuel machine
- 		
- 			if(timeLeft < 1) {
- 	 			tempsExec = machineUsing.timeOperation+timeLeft; 
- 				machinesUsed.set(nameMachine, tempsExec);
- 				if(tempsExec > tempsParallele);
-					tempsParallele = tempsExec;
- 				i++;
- 			}
- 			else {
- 				for(int j=0;j<machines;j++) {
- 					timeLeft = machinesUsed.get(j);
- 					if(timeLeft > 0)
- 						machinesUsed.set(j,timeLeft - tempsParallele);
- 				}
- 				temps += tempsParallele;
- 				tempsParallele = 0;
- 			}
-
- 			
- 		}
- 		temps += tempsParallele;
- 		return temps;
- 	}
- 	
  	public static int objFunction(ArrayList<Operation> os,ArrayList<Tuple> ma) {
  		int time = 0;
  		int[] tabDates = new int[jobs];
@@ -294,8 +288,8 @@ public class Main {
  				tabMachines[ma.get(indexMa).getNomMachine()-1] += opTime;
  				tabDates[numJob] = tabMachines[ma.get(indexMa).getNomMachine()-1];
  			}
- 	//		printTab(tabMachines);
- 	// 		printTab(tabDates);
+ 			//printTab(tabMachines);
+ 	 		//printTab(tabDates);
  		}
 	 	Arrays.sort(tabDates);
 	 	time = tabDates[jobs-1];
