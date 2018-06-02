@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 	
@@ -20,8 +21,8 @@ public class Main {
 	private static int tempsTotale = 0;
 	private static ArrayList<Operation> oS = new ArrayList<Operation>();
 	private static ArrayList<Tuple> mA = new ArrayList<Tuple>();
-	private static ArrayList<ArrayList<String>> oSPop = new ArrayList<ArrayList<String>>();   //vecteur de population : OS
-	private static ArrayList<ArrayList<String>> mAPop = new ArrayList<ArrayList<String>>();	  //vecteur de population : MA
+	private static ArrayList<ArrayList<Operation>> oSPop = new ArrayList<ArrayList<Operation>>();   //vecteur de population : OS
+	private static ArrayList<ArrayList<Tuple>> mAPop = new ArrayList<ArrayList<Tuple>>();	  //vecteur de population : MA
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
@@ -34,7 +35,15 @@ public class Main {
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
 
+<<<<<<< HEAD
 		System.out.println("Temps de réalisation :" + functionObjective(oS,mA));
+=======
+		System.out.println("La solution est réalisable ? : "+ checkFaisability());
+		System.out.println("ospop:\n"+oSPop.toString());
+		System.out.println("osma:\n"+mAPop.toString());
+
+
+>>>>>>> 21b8a91d24d65e953aba255840f56ee879cae481
 		//System.out.println("La solution est réalisable ? : "+ checkFaisability());
 		//tutorial1();
 	}
@@ -46,17 +55,15 @@ public class Main {
  	public static void createPopulation() {
  		int nbPopulation = 100;
  		int indiceRandom = (int) (Math.random() * mA.size())+1;
- 		ArrayList<String> maTemp = new ArrayList<String>();
- 		maTemp = (ArrayList<String>) mA.clone();
-
+ 		ArrayList<Tuple> maTemp = new ArrayList<Tuple>();
+ 		maTemp = (ArrayList<Tuple>) mA.clone();
  		cmptOpDone=0;
  		Operation op =  getOperationToMute(indiceRandom, 0);
- 		
  		System.out.println(indiceRandom + "qui donne : " + op.getNameOperation());
  	}
  	
  	private static Operation getOperationToMute(int indiceRandom, int job) {
- 		System.out.println("Début : indice => " + indiceRandom + ", job : " + (job+1) );
+ 		System.out.println("Début : indice => " + indiceRandom + ", job : " + (job+1));
  		int nbOperations = tabJobs[job].getNbOperations();
  		Operation op;
  		if(tabJobs.length < job || indiceRandom > oS.size())
@@ -67,6 +74,51 @@ public class Main {
  			op = getOperationToMute(indiceRandom-nbOperations,++job);
  		return op;
  	}
+ 	
+ 	private static void cross(int os1,int os2) {
+ 		int indiceCut = (int)Math.random() * oS.size();
+ 		
+ 		ArrayList<Operation> sol1 = oSPop.get(os1);
+ 		ArrayList<Operation> sol2 = oSPop.get(os2);
+ 		
+ 		ArrayList<Operation> sol2Cloned = (ArrayList<Operation>) sol2.clone();
+ 		
+ 		int i;
+ 		for(i=indiceCut;i<oS.size();i++) {
+ 			sol2.set(i, sol1.get(i));
+ 			sol1.set(i, sol2Cloned.get(i));
+ 		}
+ 		
+ 		System.out.println("crossover down");
+ 	}
+ 	
+ 	/*public static void selection() {  //par tournoi 2 à 2
+ 		int nbparents = 0;
+ 		int ind1 = (int) Math.random() * oSPop.size();
+ 		int ind2 = (int) Math.random() * oSPop.size();
+ 		
+ 		while(ind1 != ind2) { //si ils sont égaux c'est pas bon
+ 			ind2 = (int) Math.random() * oSPop.size();
+ 		}
+ 		
+ 		ArrayList<Operation> solOs1 = oSPop.get(ind1);
+ 		ArrayList<Tuple> solMa1 = mAPop.get(ind1);
+ 		ArrayList<Operation> solOs2 = oSPop.get(ind1);
+ 		ArrayList<Tuple> solMa2 = mAPop.get(ind1);
+
+ 		int f1 = functionObjective(solOs1, solMa1);
+ 		int f2 = functionObjective(solOs2, solMa2);
+ 		
+ 		if(f1<=f2) {
+ 			oSPop.remove(solOs2);
+ 			mAPop.remove(solMa2);
+ 		}
+ 		else {
+ 			oSPop.remove(solOs1);
+ 			mAPop.remove(solMa1);
+ 		}
+ 		
+ 	}*/
  	
  	public static void testAdam() {
  		
