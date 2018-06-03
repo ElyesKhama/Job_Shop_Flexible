@@ -13,8 +13,12 @@ import java.util.List;
 
 public class Main {
 	
+<<<<<<< HEAD
+	private static int cmptNotMuteOP=0,cmptNotMuteMA=0;
+=======
 	private static int cmptNotMuteMA = 0;
 	private static int cmptNotMuteOP = 0;
+>>>>>>> c83dafe6db8624d611f3899a5616d95b105d35d7
 	private static int jobs = 0;   //nb de jobs
 	private static int machines = 0;  //nb de machines
 	private static int avgMachine = 0;
@@ -90,6 +94,11 @@ public class Main {
  			oSPop.add(oS);
  	 	//	System.out.println(mATmp.toString());
  		}
+<<<<<<< HEAD
+ 		else
+ 			cmptNotMuteMA++;
+  	}
+=======
  		else {
  			cmptNotMuteMA++;
  		}
@@ -133,6 +142,7 @@ public class Main {
  		}
  	}
  	
+>>>>>>> c83dafe6db8624d611f3899a5616d95b105d35d7
  	private static void mutationOperation(ArrayList<Operation> oS, ArrayList<Tuple> mA) {
  		int iToSwap = 0;
  		int iRandOp = (int) (Math.random()* oS.size());
@@ -160,6 +170,8 @@ public class Main {
 	 				mAPop.add(mA);
 	 			//	System.out.println("jai rajouté un os : "+ oSTmp.toString());
  				}
+ 				else
+ 					cmptNotMuteOP++;
  			}
   			else {
  	 			cmptNotMuteOP++;
@@ -167,6 +179,36 @@ public class Main {
  	 		}
  		}
  				
+ 	}
+ 	
+ 	private static void createPop(){
+ 		//TODO: généricité 
+		
+		long currentTime = System.currentTimeMillis();
+		long finalTime = currentTime + 2000;
+		while(cmptNotMuteOP<5)
+			mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
+		cmptNotMuteOP=0;
+		for(int i=0;i<oSPop.size();i++) {
+			while(cmptNotMuteMA<20)
+				mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
+		}
+		cmptNotMuteMA=0;
+ 		while(currentTime < finalTime) {
+ 	 			mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
+ 	 			mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1)); //mutation operation sur solution initiale
+ 			currentTime = System.currentTimeMillis();
+ 		}
+ 	}
+
+ 	
+ 	private static void printVector(ArrayList<ArrayList<Operation>> list1, ArrayList<ArrayList<Tuple>> list2) {
+ 		int i;
+ 		for(i=0;i<list1.size();i++) {
+ 			System.out.println(list1.get(i));
+ 			System.out.println(list2.get(i));
+ 			System.out.println("\n");
+ 		}
  	}
  	
  	private static void crossOver() {
