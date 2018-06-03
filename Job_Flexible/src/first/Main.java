@@ -31,9 +31,9 @@ public class Main {
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
-		readFile("test.txt");
+		readFile("example3.txt");
 		System.out.println("Fichier chargé !");
-		
+			
 		while(nbJobEnded < jobs)
 			testAdam();
 		
@@ -41,10 +41,11 @@ public class Main {
 		mAPop.add(mA);
 		
 		//System.out.println("faisable:" + checkFaisability(oS,mA)+", time: "+functionObjective(oS,mA) );
-		System.out.println(oS.toString());
-		System.out.println(mA.toString());
+		System.out.println("os init" + oS.toString());
+		System.out.println("ma init" + mA.toString());
 		
 		for(int i=0;i<10;i++) {
+		
 			createPop();
 			System.out.println(i+"taille os/ma before select:"+mAPop.size());
 			selection();
@@ -99,7 +100,7 @@ public class Main {
  	
  	private static void createPop(){
  		int i,j;
-		
+
 		long currentTime = System.currentTimeMillis();
 		long finalTime = currentTime + 1000;
  		while(currentTime < finalTime) {
@@ -245,9 +246,11 @@ public class Main {
 	 			if(!containsAJobOp(i)) {
 	 				listOpToDo.add(operation);
 	 				tabJobs[i].popOperation();
+	 				if(tabJobs[i].getOperation() == null){
+	 					nbJobEnded++;
+	 				}
 	 			}
  			}
- 			else nbJobEnded++;
  		}
  		listOpToDo.sort(new OperationComparator());
  	}
@@ -272,7 +275,6 @@ public class Main {
  			if(!machinesUsed.contains(machineUsing.nomMachine)){
  				machinesUsed.add(machineUsing.nomMachine);
  				oS.set(cmptOpDone,op);
- 				
  				int indice = getIndexMa(listOpToDo.remove(j));
  				mA.set(indice, machineUsing);
  				j--;
@@ -350,9 +352,9 @@ public class Main {
                 
                 if (sc.hasNextLine()) {
                 	sentence = sc.nextLine();
-                	jobs = Integer.parseInt(sentence.substring(0,1));
-                	machines = Integer.parseInt(sentence.substring(4,5));
-                	avgMachine = Integer.parseInt(sentence.substring(8,9));
+                	jobs = Job.testDizaine(Integer.parseInt(sentence.substring(0,1)),Integer.parseInt(sentence.substring(1,2)));
+                	machines = Job.testDizaine(Integer.parseInt(sentence.substring(4,5)),Integer.parseInt(sentence.substring(5,6)));
+                	//avgMachine = Job.testDizaine(Integer.parseInt(sentence.substring(8,9)),Integer.parseInt(sentence.substring(9,10)));
                     
                     tabJobs = new Job[jobs];
 

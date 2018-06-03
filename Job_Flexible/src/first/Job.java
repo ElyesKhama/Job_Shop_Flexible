@@ -17,7 +17,7 @@ public class Job {
 		initJob();
 	}
 	
-	public int testDizaine(int dizaine, int unite) {
+	public static int testDizaine(int dizaine, int unite) {
 		int ret = dizaine;
 		if(unite != -1)
 			ret = dizaine*10 + unite;
