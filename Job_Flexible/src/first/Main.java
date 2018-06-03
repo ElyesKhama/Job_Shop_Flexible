@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
@@ -39,23 +40,21 @@ public class Main {
 		//System.out.println("faisable:" + checkFaisability(oS,mA)+", time: "+functionObjective(oS,mA) );
 		System.out.println(oS.toString());
 		System.out.println(mA.toString());
-		 
-		int i;
-		for(i=0;i<1;i++) {
-			mutationOperation(oSPop.get(i),mAPop.get(i));
-		}
-		while(oSPop.size()<14) {
-			mutationMachines(oSPop.get(0),mAPop.get(0));
-			mutationMachines(oSPop.get(1),mAPop.get(1));
-		}
+		
+		createPop();
+		
 		System.out.println("taille os/ma:"+mAPop.size());
 		
-		printVector(oSPop,mAPop);
+	//	printVector(oSPop,mAPop);
 		
 		int nbBeforeSelect = oSPop.size();
+		int i;
+		for(i=0;i<oSPop.size();i++) {
+			System.out.print(objFunction(oSPop.get(i),mAPop.get(i))+" ,  ");
+		}
 		
-		/*while(oSPop.size() > nbBeforeSelect/2)
-			selection(); */
+		while(oSPop.size() > nbBeforeSelect/2)
+			selection();
 
 		System.out.println("taille os/ma:"+mAPop.size());
 
@@ -68,9 +67,8 @@ public class Main {
 			System.out.println("ok ");
 		}
 		System.out.println(oSPop.toString());*/
-		
 		for(i=0;i<oSPop.size();i++) {
-			System.out.println(" le temps final est de : "+objFunction(oSPop.get(i),mAPop.get(i)));
+			System.out.print(objFunction(oSPop.get(i),mAPop.get(i))+" ,  ");
 		}
 		
 		//System.out.println("ospop:\n"+oSPop.toString());
@@ -91,30 +89,41 @@ public class Main {
  		Operation opMut = null;
  		int opMachines = 1;
  		ArrayList<Tuple> mATmp = (ArrayList<Tuple>) mA.clone();
- 		
- 		
  		while(opMachines == 1) {
  			iRandOp = (int) (Math.random() * mA.size());
  			opMut = oS.get(iRandOp);
  			opMachines = opMut.getMachinesNeeded();
  		}
  		
- 		while(iRandMachine == 0)
- 			iRandMachine = (int) (Math.random()* opMut.getMachinesNeeded());
+ 		iRandMachine = (int) (Math.random()* opMut.getMachinesNeeded());
  			
  		mATmp.set(getIndexMa(opMut), opMut.getMachineTime()[iRandMachine]);
  		
  		if(!mAPop.contains(mATmp) && checkFaisability(oS,mATmp)) {
  			mAPop.add(mATmp);
  			oSPop.add(oS);
- 	 		System.out.println(mATmp.toString());
-
+ 	 	//	System.out.println(mATmp.toString());
  		}
- 		
  		
  	//	System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
  	//	System.out.println(mAPop.toString());
   	}
+ 	
+ 	private static void createPop(){
+ 		int i,j;
+ 		int ind = 0; 	//TODO: généricité 
+		mutationOperation(oSPop.get(0),mAPop.get(0)); //mutation operation sur solution initiale
+		
+		long currentTime = System.currentTimeMillis();
+		long finalTime = currentTime + 2000;
+ 		while(currentTime < finalTime) {
+ 	 			mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
+ 	 			mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1)); //mutation operation sur solution initiale
+
+ 			ind++;
+ 			currentTime = System.currentTimeMillis();
+ 		}
+ 	}
  	
  	private static void printVector(ArrayList<ArrayList<Operation>> list1, ArrayList<ArrayList<Tuple>> list2) {
  		int i;
@@ -150,7 +159,7 @@ public class Main {
  				if(!oSPop.contains(oSTmp) && checkFaisability(oSTmp,mA)) {
 	 				oSPop.add(oSTmp);
 	 				mAPop.add(mA);
-	 				System.out.println("jai rajouté un os : "+ oSTmp.toString());
+	 			//	System.out.println("jai rajouté un os : "+ oSTmp.toString());
  				}
  			}
  			else
@@ -176,29 +185,30 @@ public class Main {
  		System.out.println("crossover down");
  	}
  	
- 	public static void selection() {  //par tournoi 2 à 2
- 		int nbparents = 0;
- 		int ind1 = (int) Math.random() * oSPop.size();
- 		int ind2 = (int) Math.random() * oSPop.size();
- 		
- 		while(ind1 != ind2) { //si ils sont égaux c'est pas bon
- 			ind2 = (int) Math.random() * oSPop.size();
+ 	public static void selection() {
+ 		int taille = oSPop.size();
+ 		TupleFunObj[] tab = new TupleFunObj[taille];
+ 		int i;
+ 		for(i=0;i<oSPop.size();i++) {
+ 			tab[i] = new TupleFunObj(objFunction(oSPop.get(i),mAPop.get(i)),i);
  		}
- 		ArrayList<Operation> solOs1 = oSPop.get(ind1);
- 		ArrayList<Tuple> solMa1 = mAPop.get(ind1);
- 		ArrayList<Operation> solOs2 = oSPop.get(ind2);
- 		ArrayList<Tuple> solMa2 = mAPop.get(ind2);
-
- 		int f1 = objFunction(solOs1, solMa1);
- 		int f2 = objFunction(solOs2, solMa2);
- 		
- 		if(f1<=f2) {
- 			oSPop.remove(solOs2);
- 			mAPop.remove(solMa2);
+ 		Arrays.sort(tab,Collections.reverseOrder(new TupleFunObjComparator()));
+ 		for(i=0;i<tab.length;i++) {
+ 			System.out.print(tab[i].toString()+",");
  		}
- 		else {
- 			oSPop.remove(solOs1);
- 			mAPop.remove(solMa1);
+ 		for(i=0;i<taille/2;i++) {
+ 			//System.out.print("val getplace:"+tab[i].getplace());
+ 			//System.out.println("val func obj :"+tab[i].getvaleurFunctionObj());
+// 			System.out.println("val fnc obj :" + tab[i].getvaleurFunctionObj());
+; 			if(tab[i].getplace() > oSPop.size()) {
+ 				oSPop.remove(tab[i].getplace()-(i));
+ 	 			mAPop.remove(tab[i].getplace()-(i));
+ 			}
+ 			else {
+	 			oSPop.remove(tab[i].getplace());
+	 			mAPop.remove(tab[i].getplace());
+ 			}
+	 		//	System.out.println("val i:"+i);
  		}
  		
  	}
