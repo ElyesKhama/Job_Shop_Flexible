@@ -27,7 +27,7 @@ public class Main {
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
-		readFile("mt10c1.txt");
+		readFile("example1.txt");
 		System.out.println("Fichier chargé !");
 		
 		initSolution();
@@ -59,14 +59,15 @@ public class Main {
  	
  	private static void mutationMachines(ArrayList<Operation> oS, ArrayList<Tuple> mA	) {
  		int iRandMachine=0;
- 		int iRandOp = 0;
+ 		int iRandOp = 0, cmptNoDifferentMachine = 0;
  		Operation opMut = null;
  		int opMachines = 1;
- 		ArrayList<Tuple> mATmp = (ArrayList<Tuple>) mA.clone();
- 		while(opMachines == 1) {
+ 		ArrayList<Tuple> mATmp = new ArrayList<Tuple>(mA);
+ 		while(opMachines == 1 && cmptNoDifferentMachine < 10) {
  			iRandOp = (int) (Math.random() * mA.size());
  			opMut = oS.get(iRandOp);
  			opMachines = opMut.getMachinesNeeded();
+ 			cmptNoDifferentMachine++;
  		}
  		
  		iRandMachine = (int) (Math.random()* opMut.getMachinesNeeded());
@@ -76,14 +77,9 @@ public class Main {
  		if(!mAPop.contains(mATmp) && checkFaisability(oS,mATmp)) {
  			mAPop.add(mATmp);
  			oSPop.add(oS);
- 	 	//	System.out.println(mATmp.toString());
  		}
  		else
  			cmptNotMuteMA++;
-  	
- 		
- 	//	System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
- 	//	System.out.println(mAPop.toString());
   	}
  	
  	private static void createPop(){
@@ -117,7 +113,7 @@ public class Main {
  		int machineToSwap = mA.get(indexMA).nomMachine;
  		int indexMATest;
  		int machineTest;
- 		ArrayList<Operation> oSTmp = (ArrayList<Operation>) oS.clone();
+ 		ArrayList<Operation> oSTmp = new ArrayList<Operation>(oS);
  		boolean stop = false;
  		
  		while(iToSwap<oS.size() && !stop) {
@@ -169,27 +165,25 @@ public class Main {
 		 		sol2MA.set(j, sol2MA.get(j));
 		 		sol1MA.set(j, sol2MACloned.get(j));
 		 	}
+		
 		 	if(!mAPop.contains(sol1MA) && checkFaisability(sol2OS,sol2MA)) {
 		 		oSPop.set(i+1, sol2OS);
 		 		mAPop.set(i+1, sol2MA);
-		 	}else {
-		 		oSPop.remove(i);
-		 		mAPop.remove(i);
 		 	}
+		 	
 		 	if(!mAPop.contains(sol1MA) && checkFaisability(sol1OS,sol1MA)) {
 			 	oSPop.set(i, sol1OS);
 			 	mAPop.set(i, sol1MA);
 	 		}
-		 	else {
-		 		oSPop.remove(i);
-		 		mAPop.remove(i);
-		 	}
+		 		
+		 		
+		 	
  		}
 	 		
 	 		System.out.println("crossover down");
 	 		
  	}
- 	
+
  	public static void selection() {
  		ArrayList<Tuple> mANull = new ArrayList<Tuple>();
  		mANull.add(new Tuple(-1,-1));
