@@ -13,7 +13,12 @@ import java.util.List;
 
 public class Main {
 	
+<<<<<<< HEAD
 	private static int cmptNotMuteOP=0,cmptNotMuteMA=0;
+=======
+	private static int cmptNotMuteMA = 0;
+	private static int cmptNotMuteOP = 0;
+>>>>>>> c83dafe6db8624d611f3899a5616d95b105d35d7
 	private static int jobs = 0;   //nb de jobs
 	private static int machines = 0;  //nb de machines
 	private static int avgMachine = 0;
@@ -56,6 +61,10 @@ public class Main {
 			System.out.print(objFunction(oSPop.get(i),mAPop.get(i))+" > ");
 		}
 		
+		int indexFinalSolution = giveFinalSolution();
+		System.out.println("indexfinal:"+indexFinalSolution);
+		System.out.println("LA SOLUTION FINALE EST :"+ oSPop.get(indexFinalSolution) +"\n" + mAPop.get(indexFinalSolution));
+		System.out.println("LE TEMPS FINAL EST DE : "+ objFunction(oSPop.get(indexFinalSolution),mAPop.get(indexFinalSolution)));
 		//tutorial1();
 	}
  	
@@ -63,7 +72,7 @@ public class Main {
  	 			-> les meilleures solutions-parents donnent les meilleures solutions-enfants
  	  Modifier 1 solution = Mutation : permet de diversifier l’ensemble de solutions*/
  	
- 	private static void mutationMachines(ArrayList<Operation> oS, ArrayList<Tuple> mA) {
+ 	private static void mutationMachines(ArrayList<Operation> oS, ArrayList<Tuple> mA	) {
  		int iRandMachine=0;
  		int iRandOp = 0;
  		Operation opMut = null;
@@ -84,9 +93,55 @@ public class Main {
  			oSPop.add(oS);
  	 	//	System.out.println(mATmp.toString());
  		}
+<<<<<<< HEAD
  		else
  			cmptNotMuteMA++;
   	}
+=======
+ 		else {
+ 			cmptNotMuteMA++;
+ 		}
+ 		
+ 	//	System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
+ 	//	System.out.println(mAPop.toString());
+  	}
+ 	
+ 	private static void createPop(){
+ 		int i,j;
+		
+		long currentTime = System.currentTimeMillis();
+		long finalTime = currentTime + 1000;
+ 		while(currentTime < finalTime) {
+ 			for(i=0;i<oSPop.size();i++) {
+ 				while(cmptNotMuteMA< 20) {
+ 					mutationMachines(oSPop.get(i),mAPop.get(i));
+ 				}
+ 				cmptNotMuteMA = 0;
+ 			}
+ 			
+ 			for(i=0;i<oSPop.size();i++) {
+ 				while(cmptNotMuteOP< 20) {
+ 					mutationOperation(oSPop.get(i),mAPop.get(i));
+ 				}
+ 				cmptNotMuteOP = 0;
+ 			}
+ 	 			//mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
+ 	 			//mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1)); //mutation operation sur solution initiale
+ 			currentTime = System.currentTimeMillis();
+ 		}
+ 	}
+
+ 	
+ 	private static void printVector(ArrayList<ArrayList<Operation>> list1, ArrayList<ArrayList<Tuple>> list2) {
+ 		int i;
+ 		for(i=0;i<list1.size();i++) {
+ 			System.out.println(list1.get(i));
+ 			System.out.println(list2.get(i));
+ 			System.out.println("\n");
+ 		}
+ 	}
+ 	
+>>>>>>> c83dafe6db8624d611f3899a5616d95b105d35d7
  	private static void mutationOperation(ArrayList<Operation> oS, ArrayList<Tuple> mA) {
  		int iToSwap = 0;
  		int iRandOp = (int) (Math.random()* oS.size());
@@ -117,8 +172,10 @@ public class Main {
  				else
  					cmptNotMuteOP++;
  			}
- 			else
+  			else {
+ 	 			cmptNotMuteOP++;
  				iToSwap++;
+ 	 		}
  		}
  				
  	}
@@ -402,6 +459,23 @@ public class Main {
 		}
 		
 		return precedesor && goodMachine;
+	}
+	
+	private static int giveFinalSolution() {
+		int[] tab = new int[mAPop.size()];
+		int indice = 0;
+		int mini = 1000;
+		for(int i=0;i<mAPop.size();i++) {
+			tab[i] = objFunction(oSPop.get(i),mAPop.get(i));
+		}
+		for(int i=0;i<tab.length;i++) {
+			if(tab[i] < mini) {
+				mini = tab[i];
+				indice = i;
+			}
+		}
+		
+		return indice;
 	}
 	
 	
