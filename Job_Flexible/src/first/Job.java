@@ -4,8 +4,6 @@ import java.util.ArrayList;
 public class Job {
 	private int numJob;
 	private String sentence = null;
-	private int nbOperations = 0;
-	private int cmptOpFinished = 0;
 	private ArrayList<Operation> operationsRestantes = new ArrayList<Operation>();   
 	private ArrayList<Operation> operationsTotales = new ArrayList<Operation>();
 	
@@ -28,9 +26,6 @@ public class Job {
 		String[] splited;
 		int compteurOp = 0;
 		splited = this.sentence.split("\\s+");
-		for(int i=0;i<splited.length;i++)
-			System.out.print(splited[i]+", ");
-		this.nbOperations = Integer.parseInt(splited[0]);
 		for(int i=1;i<splited.length;i++) {
 			int machinesNeeded = Integer.parseInt(splited[i]);
 			
@@ -47,7 +42,6 @@ public class Job {
 				operationsTotales.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
 			}
 			else {
-				System.out.println("beug :"+machinesNeeded+", i:"+i);
 				int[] nameMachine = new int[machinesNeeded];
 				int[] timeOperation = new int[machinesNeeded];
 				
@@ -79,10 +73,6 @@ public class Job {
 	    return ret;
 	}
 
-	public int getNbOperations() {
-		return this.nbOperations;
-	}
-
 	public ArrayList<Operation> getOperationsRestantes(){
 		return this.operationsRestantes;	
 	}
@@ -102,10 +92,6 @@ public class Job {
 	
 	public void popOperation() {
 		operationsRestantes.remove(0);
-	}
-	
-	public void increaseCmptOpFinished(){
-		cmptOpFinished++;
 	}
 	
 	

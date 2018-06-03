@@ -4,12 +4,10 @@ import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class Main {
 	
@@ -22,7 +20,6 @@ public class Main {
 	private static int nbJobEnded = 0;
 	private static ArrayList<Integer> machinesUsed = new ArrayList<Integer>();
 	private static ArrayList<Operation> listOpToDo = new ArrayList<Operation>();
-	private static int tempsTotale = 0;
 	private static ArrayList<Operation> oS = new ArrayList<Operation>();
 	private static ArrayList<Tuple> mA = new ArrayList<Tuple>();
 	private static ArrayList<ArrayList<Operation>> oSPop = new ArrayList<ArrayList<Operation>>();   //vecteur de population : OS
@@ -30,17 +27,10 @@ public class Main {
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
-		readFile("test.txt");
+		readFile("mt10c1.txt");
 		System.out.println("Fichier chargé !");
-			
-		while(nbJobEnded < jobs)
-			testAdam();
-		oSPop.add(oS);
-		mAPop.add(mA);
 		
-		//System.out.println("faisable:" + checkFaisability(oS,mA)+", time: "+functionObjective(oS,mA) );
-		System.out.println("os init" + oS.toString());
-		System.out.println("ma init" + mA.toString());
+		initSolution();
 		
 		for(int i=0;i<10;i++) {
 		
@@ -116,16 +106,6 @@ public class Main {
  	 			//mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
  	 			//mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1)); //mutation operation sur solution initiale
  			currentTime = System.currentTimeMillis();
- 		}
- 	}
-
- 	
- 	private static void printVector(ArrayList<ArrayList<Operation>> list1, ArrayList<ArrayList<Tuple>> list2) {
- 		int i;
- 		for(i=0;i<list1.size();i++) {
- 			System.out.println(list1.get(i));
- 			System.out.println(list2.get(i));
- 			System.out.println("\n");
  		}
  	}
  	
@@ -229,12 +209,19 @@ public class Main {
 		}
  	}
  	
- 	public static void testAdam() {
- 		
- 		selectOpToDo();
- 		//System.out.println("Opération à faire : " + listOpToDo.toString() );
+ 	public static void initSolution() {
+ 		while(nbJobEnded < jobs) {
+ 			selectOpToDo();
+ 			//System.out.println("Opération à faire : " + listOpToDo.toString() );
+ 			doOp();
+ 			//System.out.println("Opérations restantes : " + listOpToDo.toString());
+ 		}
  		doOp();
- 		//System.out.println("Opérations restantes : " + listOpToDo.toString());
+		oSPop.add(oS);
+		mAPop.add(mA);
+
+		System.out.println("os init" + oS.toString());
+		System.out.println("ma init" + mA.toString());
  	}
  	
  	private static void selectOpToDo() {
@@ -272,9 +259,10 @@ public class Main {
  			
  			op = listOpToDo.get(j);
  			machineUsing = op.getMachineTime()[0];
+ 			System.out.print(op+", ");
  			if(!machinesUsed.contains(machineUsing.nomMachine)){
  				machinesUsed.add(machineUsing.nomMachine);
- 				//System.out.println(cmptOpDone+", op:"+op+", jobDone: "+nbJobEnded);
+ 				
  				oS.set(cmptOpDone,op);
  				int indice = getIndexMa(listOpToDo.remove(j));
  				mA.set(indice, machineUsing);
@@ -317,14 +305,6 @@ public class Main {
  		return time ;
  	}
  	
- 	private static void printTab(int[] tab) {
- 		int i;
- 		for(i=0;i<tab.length;i++) {
- 			System.out.print(tab[i]+",");
- 		}
- 		System.out.println("\n");
- 	}
- 	
  	private static int getIndexMa(Operation op) {
  		String name = op.getNameOperation();
  		int numOp = Integer.parseInt(name.substring(1, 2));
@@ -332,7 +312,7 @@ public class Main {
  		int indice = 0;
  		
  		for(int i=0;i!=numJob;i++)
- 				indice += tabJobs[i].getNbOperations();
+ 				indice += tabJobs[i].getOperationsTotales().size();
  		indice += numOp;
  		return indice;
  	}
@@ -342,8 +322,7 @@ public class Main {
  			machinesUsed[i] -= time;
  		}
  	}*/
- 
-//TODO: Pour chaque machine, une liste d'opérations pouvant(devant) s'effectuer dessus
+
 
 	public static void readFile(String file) {
 		Scanner sc = null;
@@ -369,14 +348,13 @@ public class Main {
                     if(sc.hasNextLine()) {
                     	sentence = sc.nextLine();
                     	tabJobs[i] = new Job(sentence,i);
-                    	for(int j=0;j<tabJobs[i].getNbOperations();j++) {
+                    	for(int j=0;j<tabJobs[i].getOperationsTotales().size();j++) {
                     		oS.add(null);
                     		mA.add(null);
                     	}
                     }
                 }
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } finally {
                 if (sc != null)
@@ -442,18 +420,11 @@ public class Main {
 	}
 	
 	
-//TODO: Tant que notre voisinage est meilleur --> on continue d'en rechercher sinon on arrete
-	
 	private static void createListMachines(){
 		System.out.println("creation des listes pour chaque machine");
 		machinesUsed.clear();
 		for(int i=0;i<machines;i++) 
 			machinesUsed.add(0);
-	}
-	
-	private static void initListMachines() {
-		for(int i=0;i<machines;i++) 
-			machinesUsed.set(i,0);
 	}
 	
 	private static void tutorial1() {
