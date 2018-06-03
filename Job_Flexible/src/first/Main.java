@@ -57,6 +57,10 @@ public class Main {
 			System.out.print(objFunction(oSPop.get(i),mAPop.get(i))+" > ");
 		}
 		
+		int indexFinalSolution = giveFinalSolution();
+		System.out.println("indexfinal:"+indexFinalSolution);
+		System.out.println("LA SOLUTION FINALE EST :"+ oSPop.get(indexFinalSolution) +"\n" + mAPop.get(indexFinalSolution));
+		System.out.println("LE TEMPS FINAL EST DE : "+ objFunction(oSPop.get(indexFinalSolution),mAPop.get(indexFinalSolution)));
 		//tutorial1();
 	}
  	
@@ -413,6 +417,23 @@ public class Main {
 		}
 		
 		return precedesor && goodMachine;
+	}
+	
+	private static int giveFinalSolution() {
+		int[] tab = new int[mAPop.size()];
+		int indice = 0;
+		int mini = 1000;
+		for(int i=0;i<mAPop.size();i++) {
+			tab[i] = objFunction(oSPop.get(i),mAPop.get(i));
+		}
+		for(int i=0;i<tab.length;i++) {
+			if(tab[i] < mini) {
+				mini = tab[i];
+				indice = i;
+			}
+		}
+		
+		return indice;
 	}
 	
 	
