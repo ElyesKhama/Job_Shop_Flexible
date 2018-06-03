@@ -30,11 +30,7 @@ public class Main {
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
-<<<<<<< HEAD
-		readFile("example2.txt");
-=======
-		readFile("example3.txt");
->>>>>>> fa07d615bd5dee3190b76ee683701fcde09b2969
+		readFile("test.txt");
 		System.out.println("Fichier chargé !");
 			
 		while(nbJobEnded < jobs)
@@ -101,12 +97,6 @@ public class Main {
   	}
  	
  	private static void createPop(){
-<<<<<<< HEAD
-		
-=======
- 		int i,j;
-
->>>>>>> fa07d615bd5dee3190b76ee683701fcde09b2969
 		long currentTime = System.currentTimeMillis();
 		long finalTime = currentTime + 1000;
  		while(currentTime < finalTime) {
@@ -256,15 +246,9 @@ public class Main {
 	 			if(!containsAJobOp(i)) {
 	 				listOpToDo.add(operation);
 	 				tabJobs[i].popOperation();
-<<<<<<< HEAD
-
-		 			if(tabJobs[i].getOperation() == null)
-		 				nbJobEnded++;
-=======
 	 				if(tabJobs[i].getOperation() == null){
 	 					nbJobEnded++;
 	 				}
->>>>>>> fa07d615bd5dee3190b76ee683701fcde09b2969
 	 			}
  			}
  		}
@@ -364,19 +348,16 @@ public class Main {
 	public static void readFile(String file) {
 		Scanner sc = null;
 		String sentence = null;
+		String[] splited;
             try {
                 sc = new Scanner(new File(file));
                 
                 if (sc.hasNextLine()) {
                 	sentence = sc.nextLine();
-                	jobs = Job.testDizaine(Integer.parseInt(sentence.substring(0,1)),Integer.parseInt(sentence.substring(1,2)));
-<<<<<<< HEAD
-                	machines = Integer.parseInt(sentence.substring(4,5));
-                	avgMachine = Integer.parseInt(sentence.substring(8,9));
-=======
-                	machines = Job.testDizaine(Integer.parseInt(sentence.substring(4,5)),Integer.parseInt(sentence.substring(5,6)));
-                	//avgMachine = Job.testDizaine(Integer.parseInt(sentence.substring(8,9)),Integer.parseInt(sentence.substring(9,10)));
->>>>>>> fa07d615bd5dee3190b76ee683701fcde09b2969
+                	splited = sentence.split("\\s+");
+                	jobs = Integer.parseInt(splited[0]);
+                	machines = Integer.parseInt(splited[1]);
+                	avgMachine = Integer.parseInt(splited[2]);
                     
                     tabJobs = new Job[jobs];
 
