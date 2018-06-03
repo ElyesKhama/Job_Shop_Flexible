@@ -13,12 +13,7 @@ import java.util.List;
 
 public class Main {
 	
-<<<<<<< HEAD
 	private static int cmptNotMuteOP=0,cmptNotMuteMA=0;
-=======
-	private static int cmptNotMuteMA = 0;
-	private static int cmptNotMuteOP = 0;
->>>>>>> c83dafe6db8624d611f3899a5616d95b105d35d7
 	private static int jobs = 0;   //nb de jobs
 	private static int machines = 0;  //nb de machines
 	private static int avgMachine = 0;
@@ -35,12 +30,11 @@ public class Main {
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
-		readFile("test.txt");
+		readFile("example2.txt");
 		System.out.println("Fichier chargé !");
 		
 		while(nbJobEnded < jobs)
 			testAdam();
-		
 		oSPop.add(oS);
 		mAPop.add(mA);
 		
@@ -93,33 +87,27 @@ public class Main {
  			oSPop.add(oS);
  	 	//	System.out.println(mATmp.toString());
  		}
-<<<<<<< HEAD
  		else
  			cmptNotMuteMA++;
-  	}
-=======
- 		else {
- 			cmptNotMuteMA++;
- 		}
+  	
  		
  	//	System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
  	//	System.out.println(mAPop.toString());
   	}
  	
  	private static void createPop(){
- 		int i,j;
 		
 		long currentTime = System.currentTimeMillis();
 		long finalTime = currentTime + 1000;
  		while(currentTime < finalTime) {
- 			for(i=0;i<oSPop.size();i++) {
+ 			for(int i=0;i<oSPop.size();i++) {
  				while(cmptNotMuteMA< 20) {
  					mutationMachines(oSPop.get(i),mAPop.get(i));
  				}
  				cmptNotMuteMA = 0;
  			}
  			
- 			for(i=0;i<oSPop.size();i++) {
+ 			for(int i=0;i<oSPop.size();i++) {
  				while(cmptNotMuteOP< 20) {
  					mutationOperation(oSPop.get(i),mAPop.get(i));
  				}
@@ -141,7 +129,6 @@ public class Main {
  		}
  	}
  	
->>>>>>> c83dafe6db8624d611f3899a5616d95b105d35d7
  	private static void mutationOperation(ArrayList<Operation> oS, ArrayList<Tuple> mA) {
  		int iToSwap = 0;
  		int iRandOp = (int) (Math.random()* oS.size());
@@ -180,35 +167,7 @@ public class Main {
  				
  	}
  	
- 	private static void createPop(){
- 		//TODO: généricité 
-		
-		long currentTime = System.currentTimeMillis();
-		long finalTime = currentTime + 2000;
-		while(cmptNotMuteOP<5)
-			mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
-		cmptNotMuteOP=0;
-		for(int i=0;i<oSPop.size();i++) {
-			while(cmptNotMuteMA<20)
-				mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
-		}
-		cmptNotMuteMA=0;
- 		while(currentTime < finalTime) {
- 	 			mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
- 	 			mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1)); //mutation operation sur solution initiale
- 			currentTime = System.currentTimeMillis();
- 		}
- 	}
 
- 	
- 	private static void printVector(ArrayList<ArrayList<Operation>> list1, ArrayList<ArrayList<Tuple>> list2) {
- 		int i;
- 		for(i=0;i<list1.size();i++) {
- 			System.out.println(list1.get(i));
- 			System.out.println(list2.get(i));
- 			System.out.println("\n");
- 		}
- 	}
  	
  	private static void crossOver() {
  		ArrayList<Operation> sol2OS, sol2OSCloned, sol1OS ;
@@ -287,9 +246,11 @@ public class Main {
 	 			if(!containsAJobOp(i)) {
 	 				listOpToDo.add(operation);
 	 				tabJobs[i].popOperation();
+
+		 			if(tabJobs[i].getOperation() == null)
+		 				nbJobEnded++;
 	 			}
  			}
- 			else nbJobEnded++;
  		}
  		listOpToDo.sort(new OperationComparator());
  	}
@@ -313,6 +274,7 @@ public class Main {
  			machineUsing = op.getMachineTime()[0];
  			if(!machinesUsed.contains(machineUsing.nomMachine)){
  				machinesUsed.add(machineUsing.nomMachine);
+ 				//System.out.println(cmptOpDone+", op:"+op+", jobDone: "+nbJobEnded);
  				oS.set(cmptOpDone,op);
  				
  				int indice = getIndexMa(listOpToDo.remove(j));
@@ -392,7 +354,7 @@ public class Main {
                 
                 if (sc.hasNextLine()) {
                 	sentence = sc.nextLine();
-                	jobs = Integer.parseInt(sentence.substring(0,1));
+                	jobs = Job.testDizaine(Integer.parseInt(sentence.substring(0,1)),Integer.parseInt(sentence.substring(1,2)));
                 	machines = Integer.parseInt(sentence.substring(4,5));
                 	avgMachine = Integer.parseInt(sentence.substring(8,9));
                     
