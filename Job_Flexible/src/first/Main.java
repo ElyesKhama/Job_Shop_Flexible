@@ -160,8 +160,6 @@ public class Main {
  		ArrayList<Operation> solOs2 = oSPop.get(ind1);
  		ArrayList<Tuple> solMa2 = mAPop.get(ind1);
 
- 		int f1 = functionObjective(solOs1, solMa1);
- 		int f2 = functionObjective(solOs2, solMa2);
  		
  		if(f1<=f2) {
  			oSPop.remove(solOs2);
@@ -231,41 +229,6 @@ public class Main {
  		/*refreshMUtime(tempsParallele);
  		tempsTotale += tempsParallele;
  		System.out.println("Temps totale: " + tempsTotale);*/
- 	}
- 	
- 	private static int functionObjective(ArrayList<Operation> os,ArrayList<Tuple> ma) {
- 		int temps = 0;
- 		int tempsExec = 0, tempsParallele = 0, timeLeft =0, nameMachine;
- 		Tuple machineUsing;
- 		
- 		createListMachines();
- 		int i =0;
- 		while(i<os.size()) {
- 			machineUsing = ma.get(getIndexMa(os.get(i))); //machine correspondante à l'opération
- 			nameMachine = machineUsing.nomMachine-1; //numéro machine
- 			timeLeft = machinesUsed.get(nameMachine); // temps actuel machine
- 		
- 			if(timeLeft < 1) {
- 	 			tempsExec = machineUsing.timeOperation+timeLeft; 
- 				machinesUsed.set(nameMachine, tempsExec);
- 				if(tempsExec > tempsParallele);
-					tempsParallele = tempsExec;
- 				i++;
- 			}
- 			else {
- 				for(int j=0;j<machines;j++) {
- 					timeLeft = machinesUsed.get(j);
- 					if(timeLeft > 0)
- 						machinesUsed.set(j,timeLeft - tempsParallele);
- 				}
- 				temps += tempsParallele;
- 				tempsParallele = 0;
- 			}
-
- 			
- 		}
- 		temps += tempsParallele;
- 		return temps;
  	}
  	
  	public static int objFunction(ArrayList<Operation> os,ArrayList<Tuple> ma) {
