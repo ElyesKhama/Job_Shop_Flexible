@@ -56,6 +56,8 @@ public class Main {
 			}else
 				System.out.print(objFunction(oSPop.get(i),mAPop.get(i))+" ,  ");
 		}
+		crossOver();
+		System.out.println("taille os/ma:"+mAPop.size());
 		/*while(oSPop.size() < 7) {
 			mutationMachines(oSPop.get(i),mAPop.get(i));
 		}
@@ -164,21 +166,37 @@ public class Main {
  				
  	}
  	
- 	private static void crossOver(int os1,int os2) {
- 		int indiceCut = (int)Math.random() * oS.size();
+ 	private static void crossOver() {
+ 		ArrayList<Operation> sol2OS, sol2OSCloned, sol1OS ;
+ 		ArrayList<Tuple> sol2MA, sol2MACloned, sol1MA ;
+ 		int indiceCut;
  		
- 		ArrayList<Operation> sol1 = oSPop.get(os1);
- 		ArrayList<Operation> sol2 = oSPop.get(os2);
- 		
- 		ArrayList<Operation> sol2Cloned = (ArrayList<Operation>) sol2.clone();
- 		
- 		int i;
- 		for(i=indiceCut;i<oS.size();i++) {
- 			sol2.set(i, sol1.get(i));
- 			sol1.set(i, sol2Cloned.get(i));
+ 		for(int i=0;i<oSPop.size()-1;i++) {
+	 		indiceCut = (int)Math.random() * oS.size();
+		 	sol1OS = oSPop.get(i);
+		 	sol1MA = mAPop.get(i);
+		 	sol2OS = oSPop.get(i+1);
+		 	sol2MA = mAPop.get(i+1);
+		 	System.out.println("sol2OS: "+sol2OS.toString());
+		 	sol2OSCloned = new ArrayList<Operation>(sol2OS);
+		 	sol2MACloned = new ArrayList<Tuple>(sol2MA);
+		 	
+		 	for(int j=indiceCut;j<oS.size();j++) {
+		 		System.out.println(j);
+		 		sol2OS.set(j, sol1OS.get(j));
+		 		sol1OS.set(j, sol2OSCloned.get(j));
+		 		sol2MA.set(j, sol2MA.get(j));
+		 		sol1MA.set(j, sol2MACloned.get(j));
+		 	}
+	 		oSPop.set(i, sol1OS);
+	 		mAPop.set(i, sol1MA);
+	 		oSPop.set(i, sol2OS);
+	 		mAPop.set(i, sol2MA);
+	
  		}
- 		
- 		System.out.println("crossover down");
+	 		
+	 		System.out.println("crossover down");
+	 		
  	}
  	
  	public static void selection() {
