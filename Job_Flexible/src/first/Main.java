@@ -30,19 +30,24 @@ public class Main {
 	
  	public static void main(String[] args) {
 		System.out.println("Chargement du fichier.................");
+<<<<<<< HEAD
 		readFile("example2.txt");
+=======
+		readFile("example3.txt");
+>>>>>>> fa07d615bd5dee3190b76ee683701fcde09b2969
 		System.out.println("Fichier chargé !");
-		
+			
 		while(nbJobEnded < jobs)
 			testAdam();
 		oSPop.add(oS);
 		mAPop.add(mA);
 		
 		//System.out.println("faisable:" + checkFaisability(oS,mA)+", time: "+functionObjective(oS,mA) );
-		System.out.println(oS.toString());
-		System.out.println(mA.toString());
+		System.out.println("os init" + oS.toString());
+		System.out.println("ma init" + mA.toString());
 		
 		for(int i=0;i<10;i++) {
+		
 			createPop();
 			System.out.println(i+"taille os/ma before select:"+mAPop.size());
 			selection();
@@ -96,7 +101,12 @@ public class Main {
   	}
  	
  	private static void createPop(){
+<<<<<<< HEAD
 		
+=======
+ 		int i,j;
+
+>>>>>>> fa07d615bd5dee3190b76ee683701fcde09b2969
 		long currentTime = System.currentTimeMillis();
 		long finalTime = currentTime + 1000;
  		while(currentTime < finalTime) {
@@ -246,9 +256,15 @@ public class Main {
 	 			if(!containsAJobOp(i)) {
 	 				listOpToDo.add(operation);
 	 				tabJobs[i].popOperation();
+<<<<<<< HEAD
 
 		 			if(tabJobs[i].getOperation() == null)
 		 				nbJobEnded++;
+=======
+	 				if(tabJobs[i].getOperation() == null){
+	 					nbJobEnded++;
+	 				}
+>>>>>>> fa07d615bd5dee3190b76ee683701fcde09b2969
 	 			}
  			}
  		}
@@ -276,7 +292,6 @@ public class Main {
  				machinesUsed.add(machineUsing.nomMachine);
  				//System.out.println(cmptOpDone+", op:"+op+", jobDone: "+nbJobEnded);
  				oS.set(cmptOpDone,op);
- 				
  				int indice = getIndexMa(listOpToDo.remove(j));
  				mA.set(indice, machineUsing);
  				j--;
@@ -355,8 +370,13 @@ public class Main {
                 if (sc.hasNextLine()) {
                 	sentence = sc.nextLine();
                 	jobs = Job.testDizaine(Integer.parseInt(sentence.substring(0,1)),Integer.parseInt(sentence.substring(1,2)));
+<<<<<<< HEAD
                 	machines = Integer.parseInt(sentence.substring(4,5));
                 	avgMachine = Integer.parseInt(sentence.substring(8,9));
+=======
+                	machines = Job.testDizaine(Integer.parseInt(sentence.substring(4,5)),Integer.parseInt(sentence.substring(5,6)));
+                	//avgMachine = Job.testDizaine(Integer.parseInt(sentence.substring(8,9)),Integer.parseInt(sentence.substring(9,10)));
+>>>>>>> fa07d615bd5dee3190b76ee683701fcde09b2969
                     
                     tabJobs = new Job[jobs];
 
