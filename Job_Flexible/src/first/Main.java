@@ -13,6 +13,8 @@ import java.util.List;
 
 public class Main {
 	
+	private static int cmptNotMuteMA = 0;
+	private static int cmptNotMuteOP = 0;
 	private static int jobs = 0;   //nb de jobs
 	private static int machines = 0;  //nb de machines
 	private static int avgMachine = 0;
@@ -62,7 +64,7 @@ public class Main {
  	 			-> les meilleures solutions-parents donnent les meilleures solutions-enfants
  	  Modifier 1 solution = Mutation : permet de diversifier l’ensemble de solutions*/
  	
- 	private static void mutationMachines(ArrayList<Operation> oS, ArrayList<Tuple> mA) {
+ 	private static void mutationMachines(ArrayList<Operation> oS, ArrayList<Tuple> mA	) {
  		int iRandMachine=0;
  		int iRandOp = 0;
  		Operation opMut = null;
@@ -83,6 +85,9 @@ public class Main {
  			oSPop.add(oS);
  	 	//	System.out.println(mATmp.toString());
  		}
+ 		else {
+ 			cmptNotMuteMA++;
+ 		}
  		
  	//	System.out.println(oSPop.toString()+ ", Machine n*"+iRandMachine + ", opération n*"+iRandOp);
  	//	System.out.println(mAPop.toString());
@@ -90,15 +95,25 @@ public class Main {
  	
  	private static void createPop(){
  		int i,j;
- 		int ind = 0; 	//TODO: généricité 
 		
 		long currentTime = System.currentTimeMillis();
-		long finalTime = currentTime + 2000;
+		long finalTime = currentTime + 1000;
  		while(currentTime < finalTime) {
- 	 			mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
- 	 			mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1)); //mutation operation sur solution initiale
-
- 			ind++;
+ 			for(i=0;i<oSPop.size();i++) {
+ 				while(cmptNotMuteMA< 20) {
+ 					mutationMachines(oSPop.get(i),mAPop.get(i));
+ 				}
+ 				cmptNotMuteMA = 0;
+ 			}
+ 			
+ 			for(i=0;i<oSPop.size();i++) {
+ 				while(cmptNotMuteOP< 20) {
+ 					mutationOperation(oSPop.get(i),mAPop.get(i));
+ 				}
+ 				cmptNotMuteOP = 0;
+ 			}
+ 	 			//mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
+ 	 			//mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1)); //mutation operation sur solution initiale
  			currentTime = System.currentTimeMillis();
  		}
  	}
@@ -141,8 +156,10 @@ public class Main {
 	 			//	System.out.println("jai rajouté un os : "+ oSTmp.toString());
  				}
  			}
- 			else
+  			else {
+ 	 			cmptNotMuteOP++;
  				iToSwap++;
+ 	 		}
  		}
  				
  	}
