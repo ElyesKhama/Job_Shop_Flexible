@@ -14,7 +14,7 @@ public class Main {
 	private static int cmptNotMuteOP=0,cmptNotMuteMA=0;
 	private static int jobs = 0;   //nb de jobs
 	private static int machines = 0;  //nb de machines
-	private static int avgMachine = 0;
+	//private static int avgMachine = 0;
 	private static int cmptOpDone = 0;
 	private static Job[] tabJobs;
 	private static int nbJobEnded = 0;
@@ -330,7 +330,7 @@ public class Main {
                 	splited = sentence.split("\\s+");
                 	jobs = Integer.parseInt(splited[0]);
                 	machines = Integer.parseInt(splited[1]);
-                	avgMachine = Integer.parseInt(splited[2]);
+                	//avgMachine = Integer.parseInt(splited[2]);
                     
                     tabJobs = new Job[jobs];
 
