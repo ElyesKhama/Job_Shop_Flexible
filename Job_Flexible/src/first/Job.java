@@ -15,7 +15,7 @@ public class Job {
 		initJob();
 	}
 	
-	public void initJob() {
+	private void initJob() {
 		String[] splited;
 		int compteurOp = 0;
 		splited = this.sentence.split("\\s+");
@@ -24,11 +24,8 @@ public class Job {
 			
 			if(machinesNeeded == 1) {
 				i++;
-				int nameMachine = Integer.parseInt(splited[i]);
-			//	System.out.print("numJob: "+this.numJob+", machinesNeeded: "+machinesNeeded+", NameMachine : "+ nameMachine);
-				i++;
+				int nameMachine = Integer.parseInt(splited[i]);i++;
 				int timeOperation = Integer.parseInt(splited[i]);
-			//	System.out.println(", timeOperation : "+ timeOperation);
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
 				operationsRestantes.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
@@ -39,22 +36,17 @@ public class Job {
 				int[] timeOperation = new int[machinesNeeded];
 				
 				for(int j=0;j<machinesNeeded;j++) {
-					// Attention
 					i++;
 					nameMachine[j] = Integer.parseInt(splited[i]);
-				//	System.out.print("numJob: "+this.numJob+", machinesNeeded: "+machinesNeeded+", NameMachine : "+ nameMachine[j]);
 					i++;
 					timeOperation[j] = Integer.parseInt(splited[i]);
-				//	System.out.println(", timeOperation : "+ timeOperation[j]);
 				}
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
 				operationsRestantes.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob));
 				operationsTotales.add( new Operation(name,machinesNeeded,nameMachine,timeOperation,numJob) );
-			}
-			
+			}	
 		}
-		// System.out.println(this.operationsRestantes.toString());
 		
 	}
 	

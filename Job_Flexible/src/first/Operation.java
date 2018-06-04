@@ -7,10 +7,6 @@ public class Operation {
 	private int machinesNeeded = 0;
 	private Tuple[] machineTime= null;
 	private int numJob;	//correspond au job dans laquel est l'operation
-
-	public Operation() {
-		
-	}
 	
 	public Operation(String nameOperation, int machinesNeeded, int nameMachine, int timeOperation, int numJob) {
 		this.nameOperation = nameOperation;
@@ -30,7 +26,6 @@ public class Operation {
 			this.machineTime[i] = new Tuple(nameMachine[i],timeOperation[i]);
 		}
 		Arrays.sort(this.machineTime, new TupleTimeComparator());
-		//machineTimeToString();
 		this.numJob = numJob;
 	}
 	
@@ -41,15 +36,6 @@ public class Operation {
 		}
 		System.out.println(toDisplay);
 	}
-	
-	/*public String toString() {
-		String ret = "";
-		ret += "Nombre de machines dont on a besoin : " + machinesNeeded;
-		for(int i = 0;i<machineTime.length;i++)
-			 ret += machineTime[i].toString();
-		return ret; 
-		//return Integer.toString(machinesNeeded);
-	}  */
 	
 	public String toString() { 
 		return nameOperation;
