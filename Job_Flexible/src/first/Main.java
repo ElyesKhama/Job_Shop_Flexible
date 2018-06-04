@@ -14,7 +14,11 @@ public class Main {
 	private static int cmptNotMuteOP=0,cmptNotMuteMA=0;
 	private static int jobs = 0;   //nb de jobs
 	private static int machines = 0;  //nb de machines
+<<<<<<< HEAD
 	//private static int avgMachine = 0;
+=======
+	private static float avgMachine = 0;
+>>>>>>> fbf6aa32634bc0251fc11f2fd037a9f0b7e07cd2
 	private static int cmptOpDone = 0;
 	private static Job[] tabJobs;
 	private static int nbJobEnded = 0;
@@ -26,33 +30,33 @@ public class Main {
 	private static ArrayList<ArrayList<Tuple>> mAPop = new ArrayList<ArrayList<Tuple>>();	  //vecteur de population : MA
 	
  	public static void main(String[] args) {
+<<<<<<< HEAD
+ 		
+		algo("abz6.txt");	
+		//tutorial1();
+	}
+ 	
+ 	private static void algo(String file) {
+		readFile(file);
+=======
 		System.out.println("Chargement du fichier.................");
 		readFile("example1.txt");
 		System.out.println("Fichier chargé !");
 		
+>>>>>>> d399b238e011aed67c3896f07db9a2f0eefe7d4e
 		initSolution();
-		
-		for(int i=0;i<10;i++) {
-		
-			createPop();
-			System.out.println(i+"taille os/ma before select:"+mAPop.size());
-			selection();
-			System.out.println(i+"taille os/ma after select:"+mAPop.size());
-			crossOver();
-			System.out.println(i+"taille os/ma after cross:"+mAPop.size());
-		}
 
-		for(int i=0;i<mAPop.size();i++) {
-			System.out.print(objFunction(oSPop.get(i),mAPop.get(i))+" > ");
-		}
-		
+		for(int i=0;i<10;i++) {
+			createPop();
+			selection();
+			crossOver();
+			System.out.println("running...");
+		}	
 		int indexFinalSolution = giveFinalSolution();
-		System.out.println("indexfinal:"+indexFinalSolution);
-		System.out.println("LA SOLUTION FINALE EST :"+ oSPop.get(indexFinalSolution) +"\n" + mAPop.get(indexFinalSolution));
-		System.out.println("LE TEMPS FINAL EST DE : "+ objFunction(oSPop.get(indexFinalSolution),mAPop.get(indexFinalSolution)));
-		//tutorial1();
-	}
- 	
+		int tempsFinal = objFunction(oSPop.get(indexFinalSolution),mAPop.get(indexFinalSolution));
+		System.out.println("LE TEMPS FINAL EST DE : "+ tempsFinal);
+ 	}
+
  	/*Combiner 2 solutions (parents) = croisement ( -> enfants) -> intensification
  	 			-> les meilleures solutions-parents donnent les meilleures solutions-enfants
  	  Modifier 1 solution = Mutation : permet de diversifier l’ensemble de solutions*/
@@ -90,15 +94,16 @@ public class Main {
  				while(cmptNotMuteMA< 20) {
  					mutationMachines(oSPop.get(i),mAPop.get(i));
  				}
- 				cmptNotMuteMA = 0;
  			}
- 			
+			cmptNotMuteMA = 0;
+				
  			for(int i=0;i<oSPop.size();i++) {
  				while(cmptNotMuteOP< 20) {
  					mutationOperation(oSPop.get(i),mAPop.get(i));
  				}
- 				cmptNotMuteOP = 0;
  			}
+			cmptNotMuteOP = 0;
+
  	 			//mutationMachines(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1));
  	 			//mutationOperation(oSPop.get(oSPop.size()-1),mAPop.get(mAPop.size()-1)); //mutation operation sur solution initiale
  			currentTime = System.currentTimeMillis();
@@ -175,6 +180,13 @@ public class Main {
 			 	oSPop.set(i, sol1OS);
 			 	mAPop.set(i, sol1MA);
 	 		}
+<<<<<<< HEAD
+		 	else {
+		 		oSPop.remove(i);
+		 		mAPop.remove(i);
+		 	}
+ 		}	 		
+=======
 		 		
 		 		
 		 	
@@ -182,6 +194,7 @@ public class Main {
 	 		
 	 		System.out.println("crossover down");
 	 		
+>>>>>>> d399b238e011aed67c3896f07db9a2f0eefe7d4e
  	}
 
  	public static void selection() {
@@ -253,7 +266,7 @@ public class Main {
  			
  			op = listOpToDo.get(j);
  			machineUsing = op.getMachineTime()[0];
- 			System.out.print(op+", ");
+ 			//System.out.print(op+", ");
  			if(!machinesUsed.contains(machineUsing.nomMachine)){
  				machinesUsed.add(machineUsing.nomMachine);
  				
@@ -275,6 +288,8 @@ public class Main {
  		int i;
  		for(i=0;i<jobs;i++) {
  			tabDates[i] = 0;
+ 		}
+ 		for(i=0;i<machines;i++) {
  			tabMachines[i] = 0;
  		}
  		Operation opToDo;
@@ -282,7 +297,9 @@ public class Main {
  		int numJob;
  		for(i=0;i<os.size();i++) {
  			opToDo = os.get(i);
- 			numJob = Integer.parseInt(opToDo.getNameOperation().substring(3, 4));
+ 			String nameOp = opToDo.getNameOperation();
+ 			String[] split = nameOp.split("-");
+ 			numJob = Integer.parseInt(split[0].substring(1, 2));
  			int indexMa = getIndexMa(opToDo);
  			opTime = opToDo.getTimeMachine(ma.get(indexMa).getNomMachine());  //todo : getIndexMA avec ma passé en parametre et pas tjrs mA global.
  			if(tabDates[numJob] >= tabMachines[ma.get(indexMa).getNomMachine()-1]) {
@@ -301,8 +318,9 @@ public class Main {
  	
  	private static int getIndexMa(Operation op) {
  		String name = op.getNameOperation();
- 		int numOp = Integer.parseInt(name.substring(1, 2));
- 		int numJob = Integer.parseInt(name.substring(3, 4));
+ 		String[] split = name.split("-");
+ 		int numOp = Integer.parseInt(split[0].substring(1, 2));
+ 		int numJob = Integer.parseInt(split[1]);
  		int indice = 0;
  		
  		for(int i=0;i!=numJob;i++)
@@ -330,8 +348,13 @@ public class Main {
                 	splited = sentence.split("\\s+");
                 	jobs = Integer.parseInt(splited[0]);
                 	machines = Integer.parseInt(splited[1]);
+<<<<<<< HEAD
                 	//avgMachine = Integer.parseInt(splited[2]);
                     
+=======
+                	avgMachine = Float.parseFloat(splited[2]);
+
+>>>>>>> fbf6aa32634bc0251fc11f2fd037a9f0b7e07cd2
                     tabJobs = new Job[jobs];
 
              		createListMachines();
@@ -415,7 +438,7 @@ public class Main {
 	
 	
 	private static void createListMachines(){
-		System.out.println("creation des listes pour chaque machine");
+		//System.out.println("creation des listes pour chaque machine");
 		machinesUsed.clear();
 		for(int i=0;i<machines;i++) 
 			machinesUsed.add(0);
