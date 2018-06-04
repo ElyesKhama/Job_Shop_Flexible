@@ -27,7 +27,7 @@ public class Main {
 	
  	public static void main(String[] args) {
  		
-		algo("abz6.txt");	
+		algo("test.txt");	
 		displayGraphJobs();
 	}
  	
@@ -35,11 +35,12 @@ public class Main {
  		int indexFinalSolution, tempsFinal;
 		readFile(file);
 		initSolution();
-
+		System.out.println("ATTENTION :"+objFunction(oS,mA));
 		for(int i=0;i<10;i++) {
 			createPop();
 			selection();
 			crossOver();
+			
 			System.out.println("running...");
 		}
 		indexFinalSolution = giveFinalSolution();
@@ -56,7 +57,7 @@ public class Main {
  		int iRandOp = 0, cmptNoDifferentMachine = 0;
  		Operation opMut = null;
  		int opMachines = 1;
- 		ArrayList<Tuple> mATmp = new ArrayList<Tuple>(mA);
+ 		ArrayList<Tuple> mATmp = (ArrayList<Tuple>) mA.clone();//new ArrayList<Tuple>(mA);
  		while(opMachines == 1 && cmptNoDifferentMachine < 10) {
  			iRandOp = (int) (Math.random() * mA.size());
  			opMut = oS.get(iRandOp);
@@ -105,7 +106,7 @@ public class Main {
  		int machineToSwap = mA.get(indexMA).nomMachine;
  		int indexMATest;
  		int machineTest;
- 		ArrayList<Operation> oSTmp = new ArrayList<Operation>(oS);
+ 		ArrayList<Operation> oSTmp = (ArrayList<Operation>) oS.clone();//new ArrayList<Operation>(oS);
  		boolean stop = false;
  		
  		while(iToSwap<oS.size() && !stop) {
@@ -156,19 +157,16 @@ public class Main {
 		 		sol2MA.set(j, sol2MA.get(j));
 		 		sol1MA.set(j, sol2MACloned.get(j));
 		 	}
-		
-		 	if(!mAPop.contains(sol1MA) && checkFaisability(sol2OS,sol2MA)) {
-		 		oSPop.set(i+1, sol2OS);
-		 		mAPop.set(i+1, sol2MA);
-		 	}
+
 		 	
 		 	if(!mAPop.contains(sol1MA) && checkFaisability(sol1OS,sol1MA)) {
 			 	oSPop.set(i, sol1OS);
 			 	mAPop.set(i, sol1MA);
 	 		}
-		 	else {
-		 		oSPop.remove(i);
-		 		mAPop.remove(i);
+		
+		 	if(!mAPop.contains(sol2MA) && checkFaisability(sol2OS,sol2MA)) {
+		 		oSPop.set(i+1, sol2OS);
+		 		mAPop.set(i+1, sol2MA);
 		 	}
  		}
  	}
@@ -181,6 +179,7 @@ public class Main {
  		for(int i=0;i<oSPop.size();i++)
  			tab[i] = new TupleFunObj(objFunction(oSPop.get(i),mAPop.get(i)),i);
  		Arrays.sort(tab, Collections.reverseOrder(new TupleFunObjComparator()));
+
  		for(int i=0;i<(tab.length/2);i++)
 	 		mAPop.set(tab[i].getplace(),mANull);
  		for(int i=0;i<oSPop.size();i++) {
@@ -190,6 +189,9 @@ public class Main {
 				i--;
 			}
 		}
+
+ 		for(int i=0;i<mAPop.size();i++)
+ 			System.out.println(objFunction(oSPop.get(i),mAPop.get(i))+", ");
  	}
  	
  	private static void initSolution() {

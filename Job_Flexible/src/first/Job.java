@@ -24,7 +24,8 @@ public class Job {
 			
 			if(machinesNeeded == 1) {
 				i++;
-				int nameMachine = Integer.parseInt(splited[i]);i++;
+				int nameMachine = Integer.parseInt(splited[i]);
+				i++;
 				int timeOperation = Integer.parseInt(splited[i]);
 				String name = "o"+Integer.toString(compteurOp)+"-"+Integer.toString(numJob);
 				compteurOp++;
